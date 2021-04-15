@@ -224,7 +224,7 @@ class Plot {
                 } else if (this.dragPoint == 2) {
                     this.dragLine.x2 = mouse.x;
                     this.dragLine.y2 = mouse.y;
-                } else if (this.dragLine == null) {
+                } else {
                     this.dragPoint.x = mouse.x;
                     this.dragPoint.y = mouse.y;
                 }
