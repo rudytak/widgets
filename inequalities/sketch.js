@@ -209,21 +209,23 @@ class Inequalities {
             }
 
             p.push();
-            p.strokeWeight(5);
+            p.strokeWeight(10);
+            p.stroke(201, 45, 24)
             if (p.dist(p1.x, p1.y, s.x, s.y) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = l;
                 this.hoverPoint = 1;
-                p.strokeWeight(10);
+                p.strokeWeight(15);
             }
             p.point(p1.x, p1.y);
             p.pop();
 
             p.push();
-            p.strokeWeight(5);
+            p.strokeWeight(10);
+            p.stroke(201, 45, 24)
             if (p.dist(p2.x, p2.y, s.x, s.y) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = l;
                 this.hoverPoint = 2;
-                p.strokeWeight(10);
+                p.strokeWeight(15);
             }
             p.point(p2.x, p2.y);
             p.pop();
