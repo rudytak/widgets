@@ -264,7 +264,7 @@
                         <div class="row">
                             <div class="col-lg-12 pb-64pt">
                                 <div id="widget-container" style="cursor: pointer;">
-                                    <input id="inequalities-lines" type="hidden" autocomplete="off"></input>
+                                    <input id="cummulative-frequency-diagram-points" type="hidden" autocomplete="off"></input>
                                 </div>
                             </div>
                         </div>
@@ -939,48 +939,45 @@
             // START - VALUES FROM BACKEND //
             // segments: 2 to 5 (values >= 10 degrees)
             var canvasData = {
-                quadrants: "full",
+                quadrants: 1,
                 x_axis: {
-                    start: -10,
-                    end: 10,
-                    increment: 1,
+                    start: 5,
+                    end: 100,
+                    increment: 10,
                     show: true,
                     label: "X"
                 },
                 y_axis: {
-                    start: -10,
-                    end: 10,
-                    increment: 1,
+                    start: -5,
+                    end: 100,
+                    increment: 20,
                     show: true,
                     label: "Y"
                 },
                 showGrid: true,
-                snapToGrid: false,
+                snapToGrid: true,
                 axisNumbering: true
             }
+            var pnts = [{
+                x: 10,
+                y: 0
+            }, {
+                x: 25,
+                y: 8
+            }, {
+                x: 40,
+                y: 28
+            }, {
+                x: 65,
+                y: 60
+            }, {
+                x: 80,
+                y: 74
+            }, {
+                x: 95,
+                y: 80
+            }]
             var interactive = true;
-            var input_lines = [
-                /*{
-                                x1: 0,
-                                y1: 1,
-                                x2: 1,
-                                y2: 2,
-                                type: "solid"
-                            }, {
-                                x1: 0,
-                                y1: -1,
-                                x2: -1,
-                                y2: 2,
-                                type: "vector"
-                            }*/
-            ]
-            var input_points = [
-                /*{
-                                x: 5,
-                                y: 4
-                            }*/
-            ]
-
 
             // colors: color palette used by the pie chart 
             // (if this is not provided globally it will still work)
@@ -989,7 +986,7 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.3.0/math.js"></script>
         <script src="assets/js/widgets/pie_chart/p5.min.js"></script>
-        <script src="assets/js/widgets/plot/plot.js"></script>
+        <script src="assets/js/widgets/cummulative_frequency_diagram/cummulative_frequency_diagram.js"></script>
 
 </body>
 

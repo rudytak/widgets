@@ -955,32 +955,18 @@
                     label: "Y"
                 },
                 showGrid: true,
-                snapToGrid: false,
+                snapToGrid: true,
                 axisNumbering: true
             }
             var interactive = true;
-            var input_lines = [
-                /*{
-                                x1: 0,
-                                y1: 1,
-                                x2: 1,
-                                y2: 2,
-                                type: "solid"
-                            }, {
-                                x1: 0,
-                                y1: -1,
-                                x2: -1,
-                                y2: 2,
-                                type: "vector"
-                            }*/
-            ]
-            var input_points = [
-                /*{
-                                x: 5,
-                                y: 4
-                            }*/
-            ]
-
+            var input_lines = [{
+                x1: 0,
+                y1: 1,
+                x2: 1,
+                y2: 2,
+                type: "dashed",
+                direction: "smaller"
+            }]
 
             // colors: color palette used by the pie chart 
             // (if this is not provided globally it will still work)
@@ -989,7 +975,7 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.3.0/math.js"></script>
         <script src="assets/js/widgets/pie_chart/p5.min.js"></script>
-        <script src="assets/js/widgets/plot/plot.js"></script>
+        <script src="assets/js/widgets/inequalities/inequalities.js"></script>
 
 </body>
 

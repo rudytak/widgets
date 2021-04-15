@@ -438,4 +438,6 @@ class Coordinate_Canvas {
     click() {}
 
     resize() {}
+
+    out() {}
 }
