@@ -236,12 +236,13 @@ class Plot {
         p.stroke(labelTextColor);
         for (var poi of this.points) {
             p.push();
-            p.strokeWeight(5);
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
             var pos = this.canv.getPos(poi.x, poi.y);
             if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = null;
                 this.hoverPoint = poi;
-                p.strokeWeight(10);
+                p.strokeWeight(15);
             }
             p.point(pos.x, pos.y);
             p.pop();
@@ -267,21 +268,23 @@ class Plot {
             var p2 = this.canv.getPos(l.x2, l.y2)
 
             p.push();
-            p.strokeWeight(5);
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
             if (p.dist(p1.x, p1.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = l;
                 this.hoverPoint = 1;
-                p.strokeWeight(10);
+                p.strokeWeight(15);
             }
             p.point(p1.x, p1.y);
             p.pop();
 
             p.push();
-            p.strokeWeight(5);
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
             if (p.dist(p2.x, p2.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = l;
                 this.hoverPoint = 2;
-                p.strokeWeight(10);
+                p.strokeWeight(15);
             }
             p.point(p2.x, p2.y);
             p.pop();
@@ -372,10 +375,11 @@ class Plot {
                 p.push();
                 var pos = this.canv.getPos(poi.x, poi.y);
 
-                p.strokeWeight(5);
+                p.stroke(201, 45, 24)
+                p.strokeWeight(10);
                 if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
                     this.hoverPoint = f.points[f.points.indexOf(poi)];
-                    p.strokeWeight(10);
+                    p.strokeWeight(15);
                 }
                 p.point(pos.x, pos.y);
                 p.pop();
