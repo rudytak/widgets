@@ -327,9 +327,12 @@ class Plot {
 
                 p.strokeWeight(2);
                 p.noFill();
-                p.beginShape(p.LINE);
-                for (var i = this.canv.x_axis.start - 0.05 * this.canv.x_axis.increment; i < this.canv.x_axis.end; i += this.canv.x_axis.increment / 10) {
-                    var value = 0;
+                p.beginShape(LINE);
+                var lastVal;
+                var beg = true;
+                var value = 0;
+                for (var i = this.canv.x_axis.start - 0.05 * this.canv.x_axis.increment; i < this.canv.x_axis.end; i += this.canv.x_axis.increment / 25) {
+                    lastVal = value;
 
                     switch (f.type) {
                         case "sin":
@@ -352,7 +355,16 @@ class Plot {
                     }
 
                     var pos = this.canv.getPos(i, value);
-                    p.vertex(pos.x, pos.y);
+                    if (Math.abs(lastVal - value) > p.height / 10) {
+                        beg = false;
+                        p.endShape();
+                    } else {
+                        if (!beg) {
+                            p.beginShape(LINE);
+                            beg = true;
+                        }
+                        p.vertex(pos.x, pos.y);
+                    }
                 }
                 p.endShape();
             } catch (e) {
