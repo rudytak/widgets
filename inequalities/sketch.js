@@ -164,6 +164,7 @@ class Inequalities {
     draw() {
         var p = this.p;
         this.canv.draw();
+        var col = ["#00ACED", "#F26363", "#69B516", "#FF8F41"];
 
         this.hoverPoint = null;
 
@@ -183,7 +184,6 @@ class Inequalities {
         }
 
         p.stroke(labelTextColor);
-        p.fill(255, 0, 0, 64);
         p.strokeWeight(2);
         var lin = this.lines;
         if (this.v1) {
@@ -198,6 +198,7 @@ class Inequalities {
         }
 
         for (var l of lin) {
+            p.fill(col[lin.indexOf(l) % col.length] + "40");
             var p1 = this.canv.getPos(l.x1, l.y1);
             var p2 = this.canv.getPos(l.x2, l.y2);
 
