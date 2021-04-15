@@ -175,6 +175,7 @@ class Transformation {
         }
         p.endShape(p.CLOSE);
 
+        /*
         p.fill(this.sA.primary_col)
         for (var poi of this.sA.points) {
             var pos = this.canv.getPos(poi.x, poi.y);
@@ -182,7 +183,7 @@ class Transformation {
                 p.ellipse(pos.x, pos.y, 10, 10);
                 this.hoverPoint = this.sA.points[this.sA.points.indexOf(poi)];
             } else p.ellipse(pos.x, pos.y, 5, 5);
-        }
+        }*/
 
         p.fill(this.sB.secondary_col);
         p.beginShape();
@@ -227,7 +228,7 @@ class Transformation {
 
             if (l.type == "dashed") {
                 const ctx = p.drawingContext;
-                ctx.setLineDash([10, 5]);
+                ctx.setLineDash([10, 10]);
 
                 if (dx == 0) {
                     p.line(p1.x, 0, p1.x, p.height);
