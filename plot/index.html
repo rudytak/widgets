@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="en"><head>
+  <script src="p5.js"></script>
+  <script src="p5.sound.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+
+</head>
+
+<body>
+  <div id="widget-container" style="cursor: pointer;">
+    <input id="inequalities-lines" type="hidden" autocomplete="off">
+  </div>
+  <!-- Pie Chart JS -->
+  <script>
+    // START - VALUES FROM BACKEND //
+    // segments: 2 to 5 (values >= 10 degrees)
+    var canvasData = {
+      quadrants: "full",
+      x_axis: {
+        start: -10,
+        end: 10,
+        increment: 1,
+        show: true,
+        label: "X"
+      },
+      y_axis: {
+        start: -10,
+        end: 10,
+        increment: 1,
+        show: true,
+        label: "Y"
+      },
+      showGrid: true,
+      snapToGrid: false,
+      axisNumbering: true
+    }
+    var interactive = true;
+    var input_lines = [
+      /*{
+                      x1: 0,
+                      y1: 1,
+                      x2: 1,
+                      y2: 2,
+                      type: "solid"
+                  }, {
+                      x1: 0,
+                      y1: -1,
+                      x2: -1,
+                      y2: 2,
+                      type: "vector"
+                  }*/
+    ]
+    var input_points = [
+      /*{
+                      x: 5,
+                      y: 4
+                  }*/
+    ]
+
+
+    // colors: color palette used by the pie chart 
+    // (if this is not provided globally it will still work)
+    // const pieColors = ["#00ACED", "#F26363", "#69B516", "#FF8F41", "#A659FF"]
+    // END - VALUES FROM BACKEND //
+  </script>
+  <script src="math.js"></script>
+  <script src="sketch.js"></script>
+
+
+</body></html>
