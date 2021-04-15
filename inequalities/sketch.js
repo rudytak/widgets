@@ -249,17 +249,30 @@ class Inequalities {
 
             p.push();
             p.noStroke();
-            if (l.direction != undefined && dx != 0) {
+            if (l.direction != undefined) {
                 p.beginShape();
-                p.vertex(0, f(0))
-                p.vertex(p.width, f(p.width))
+                if (dx == 0) {
+                    if (l.direction == "larger") {
+                        p.vertex(p1.x, 0)
+                        p.vertex(p1.x, p.height)
+                    } else {
+                        p.vertex(p1.x, 0)
+                        p.vertex(p1.x, p.height)
+                    }
+                } else {
+                    p.vertex(0, f(0))
+                    p.vertex(p.width, f(p.width))
+                }
+
 
                 if (l.direction == "larger") {
                     p.vertex(p.width, p.height);
                     p.vertex(p.width, 0);
                     p.vertex(0, 0);
                     p.vertex(0, p.height);
+                    if (dx == 0) p.vertex(0, 0);
                 } else {
+                    if (dx == 0) p.vertex(p.width, p.height);
                     p.vertex(p.width, 0);
                     p.vertex(p.width, p.height);
                     p.vertex(0, p.height);
