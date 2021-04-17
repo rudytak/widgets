@@ -327,12 +327,13 @@ class Plot {
 
                 p.strokeWeight(2);
                 p.noFill();
-                p.beginShape(LINE);
+                p.beginShape(p.LINE);
                 var lastVal;
                 var beg = true;
                 var value = 0;
                 for (var i = this.canv.x_axis.start - 0.05 * this.canv.x_axis.increment; i < this.canv.x_axis.end; i += this.canv.x_axis.increment / 25) {
                     lastVal = value;
+                    value = 0;
 
                     switch (f.type) {
                         case "sin":
@@ -355,12 +356,12 @@ class Plot {
                     }
 
                     var pos = this.canv.getPos(i, value);
-                    if (Math.abs(lastVal - value) > p.height / 10) {
+                    if (Math.abs(lastVal - value) > p.height / 10 && (f.type == "tan" || f.type == "reci")) {
                         beg = false;
                         p.endShape();
                     } else {
                         if (!beg) {
-                            p.beginShape(LINE);
+                            p.beginShape(p.LINE);
                             beg = true;
                         }
                         p.vertex(pos.x, pos.y);
