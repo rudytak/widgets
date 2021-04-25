@@ -247,19 +247,21 @@ class Coordinate_Canvas {
         if (this.quadrants == "full") {
             x_axis_pos = 0;
             y_axis_pos = 0;
-        } else if (this.quadrants == 1) {
-            x_axis_pos = this.x_axis.start;
-            y_axis_pos = this.y_axis.start;
-        } else if (this.quadrants == 2) {
-            x_axis_pos = this.x_axis.end;
-            y_axis_pos = this.y_axis.start;
-        } else if (this.quadrants == 3) {
-            x_axis_pos = this.x_axis.end;
-            y_axis_pos = this.y_axis.end;
-        } else if (this.quadrants == 4) {
-            x_axis_pos = this.x_axis.start;
-            y_axis_pos = this.y_axis.end;
-        } else if (this.quadrants == "line") {
+        }
+        /*else if (this.quadrants == 1) {
+                   x_axis_pos = this.x_axis.start;
+                   y_axis_pos = this.y_axis.start;
+               } else if (this.quadrants == 2) {
+                   x_axis_pos = this.x_axis.end;
+                   y_axis_pos = this.y_axis.start;
+               } else if (this.quadrants == 3) {
+                   x_axis_pos = this.x_axis.end;
+                   y_axis_pos = this.y_axis.end;
+               } else if (this.quadrants == 4) {
+                   x_axis_pos = this.x_axis.start;
+                   y_axis_pos = this.y_axis.end;
+               } */
+        else if (this.quadrants == "line") {
             this.x_axis.show = true;
 
             this.y_axis.show = false;
@@ -267,6 +269,9 @@ class Coordinate_Canvas {
 
             x_axis_pos = 0;
             y_axis_pos = (this.y_axis.start + this.y_axis.end) / 2;
+        } else {
+            x_axis_pos = 0;
+            y_axis_pos = 0;
         }
         this.x_axis_pos = x_axis_pos;
         this.y_axis_pos = y_axis_pos;
