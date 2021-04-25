@@ -132,7 +132,13 @@ class Coordinate_Canvas {
         this.update = update;
 
         this.x_axis = x_axis;
+        this.x_axis.start -= this.x_axis.increment / 2;
+        this.x_axis.end += this.x_axis.increment / 2;
+
         this.y_axis = y_axis;
+        this.y_axis.start -= this.y_axis.increment / 2;
+        this.y_axis.end += this.y_axis.increment / 2;
+
         this.quadrants = quadrants;
         this.showGrid = showGrid;
         this.snapToGrid = snapToGrid;
@@ -249,12 +255,13 @@ class Coordinate_Canvas {
                         var b = { x: x - p.textWidth(rounded) / 2, y: ya + 15 - 12, w: p.textWidth(rounded), h: 13 }
                         p.fill(backgroundColor);
                         p.rect(b.x, b.y, b.w, b.h);
-                      
+
                         p.fill(labelTextColor);
                         p.text(rounded, x - p.textWidth(rounded) / 2, ya + 15);
                     } else {
+                        /*
                         p.fill(labelTextColor);
-                        p.text(rounded, x + 3, ya + 15);
+                        p.text(rounded, x + 3, ya + 15);*/
                     }
                     p.pop();
                 }
@@ -287,14 +294,15 @@ class Coordinate_Canvas {
                     p.noStroke();
                     var rounded = Math.round((i) * 10 ** rounding) / 10 ** rounding
                     if (rounded != y_axis_pos) {
-                        var b = { x: xa - p.textWidth(rounded) - 6, y: y + 4 - 12, w: p.textWidth(rounded)+2, h: 13 }
+                        var b = { x: xa - p.textWidth(rounded) - 6, y: y + 4 - 12, w: p.textWidth(rounded) + 2, h: 13 }
                         p.fill(backgroundColor);
                         p.rect(b.x, b.y, b.w, b.h);
-                      
+
                         p.fill(labelTextColor);
                         p.text(rounded, xa - p.textWidth(rounded) - 5, y + 4);
                     } else {
-                        p.text(rounded, xa - p.textWidth(rounded) - 5, y - 4);
+                        /*
+                        p.text(rounded, xa - p.textWidth(rounded) - 5, y - 4);*/
                     }
                     p.pop();
                 }
