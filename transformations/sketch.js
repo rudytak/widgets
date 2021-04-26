@@ -76,19 +76,21 @@ const createCummulativeFrequencyDiagram = (() => {
         p.setup = () => {
             trans = new Transformation(creationData, p, updateHiddenInputs)
 
-            var solidBtn = document.createElement("button");
-            solidBtn.innerText = "─";
-            solidBtn.type = "button";
-            solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            solidBtn.onclick = () => { trans.addSolid() };
-            node.appendChild(solidBtn)
+            if (creationData.interactive) {
+                var solidBtn = document.createElement("button");
+                solidBtn.innerText = "─";
+                solidBtn.type = "button";
+                solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                solidBtn.onclick = () => { trans.addSolid() };
+                node.appendChild(solidBtn)
 
-            var dashedBtn = document.createElement("button");
-            dashedBtn.innerText = "┄";
-            dashedBtn.type = "button";
-            dashedBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            dashedBtn.onclick = () => { trans.addDashed() };
-            node.appendChild(dashedBtn)
+                var dashedBtn = document.createElement("button");
+                dashedBtn.innerText = "┄";
+                dashedBtn.type = "button";
+                dashedBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                dashedBtn.onclick = () => { trans.addDashed() };
+                node.appendChild(dashedBtn)
+            }
 
             var c = p.createCanvas(dims.w, dims.h)
             c.elt.addEventListener("mousedown", () => {
