@@ -76,75 +76,77 @@ const createCummulativeFrequencyDiagram = (() => {
         p.setup = () => {
             plt = new Plot(creationData, p, updateHiddenInputs)
 
-            var pointBtn = document.createElement("button");
-            pointBtn.innerText = "●";
-            pointBtn.type = "button";
-            pointBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            pointBtn.onclick = () => { plt.addPoint() };
-            node.appendChild(pointBtn)
+            if (creationData.interactive) {
+                var pointBtn = document.createElement("button");
+                pointBtn.innerText = "●";
+                pointBtn.type = "button";
+                pointBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                pointBtn.onclick = () => { plt.addPoint() };
+                node.appendChild(pointBtn)
 
-            var lineBtn = document.createElement("button");
-            lineBtn.innerText = "─";
-            lineBtn.type = "button";
-            lineBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            lineBtn.onclick = () => { plt.addLine("solid") };
-            node.appendChild(lineBtn)
+                var lineBtn = document.createElement("button");
+                lineBtn.innerText = "─";
+                lineBtn.type = "button";
+                lineBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                lineBtn.onclick = () => { plt.addLine("solid") };
+                node.appendChild(lineBtn)
 
-            var vectorBtn = document.createElement("button");
-            vectorBtn.innerText = "→";
-            vectorBtn.type = "button";
-            vectorBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            vectorBtn.onclick = () => { plt.addLine("vector") };
-            node.appendChild(vectorBtn)
+                var vectorBtn = document.createElement("button");
+                vectorBtn.innerText = "→";
+                vectorBtn.type = "button";
+                vectorBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                vectorBtn.onclick = () => { plt.addLine("vector") };
+                node.appendChild(vectorBtn)
 
-            var linearFunctionBtn = document.createElement("button");
-            linearFunctionBtn.innerText = "Linear function";
-            linearFunctionBtn.type = "button";
-            linearFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            linearFunctionBtn.onclick = () => { plt.addFunction(2) };
-            node.appendChild(linearFunctionBtn)
+                var linearFunctionBtn = document.createElement("button");
+                linearFunctionBtn.innerText = "Linear function";
+                linearFunctionBtn.type = "button";
+                linearFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                linearFunctionBtn.onclick = () => { plt.addFunction(2) };
+                node.appendChild(linearFunctionBtn)
 
-            var quadraticFunctionBtn = document.createElement("button");
-            quadraticFunctionBtn.innerText = "Quadratic function";
-            quadraticFunctionBtn.type = "button";
-            quadraticFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            quadraticFunctionBtn.onclick = () => { plt.addFunction(3) };
-            node.appendChild(quadraticFunctionBtn)
+                var quadraticFunctionBtn = document.createElement("button");
+                quadraticFunctionBtn.innerText = "Quadratic function";
+                quadraticFunctionBtn.type = "button";
+                quadraticFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                quadraticFunctionBtn.onclick = () => { plt.addFunction(3) };
+                node.appendChild(quadraticFunctionBtn)
 
-            var cubicFunctionBtn = document.createElement("button");
-            cubicFunctionBtn.innerText = "Cubic function";
-            cubicFunctionBtn.type = "button";
-            cubicFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            cubicFunctionBtn.onclick = () => { plt.addFunction(4) };
-            node.appendChild(cubicFunctionBtn)
+                var cubicFunctionBtn = document.createElement("button");
+                cubicFunctionBtn.innerText = "Cubic function";
+                cubicFunctionBtn.type = "button";
+                cubicFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                cubicFunctionBtn.onclick = () => { plt.addFunction(4) };
+                node.appendChild(cubicFunctionBtn)
 
-            var sinFunctionBtn = document.createElement("button");
-            sinFunctionBtn.innerText = "Sinusodial function";
-            sinFunctionBtn.type = "button";
-            sinFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            sinFunctionBtn.onclick = () => { plt.addSin() };
-            node.appendChild(sinFunctionBtn)
+                var sinFunctionBtn = document.createElement("button");
+                sinFunctionBtn.innerText = "Sinusodial function";
+                sinFunctionBtn.type = "button";
+                sinFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                sinFunctionBtn.onclick = () => { plt.addSin() };
+                node.appendChild(sinFunctionBtn)
 
-            var tanFunctionBtn = document.createElement("button");
-            tanFunctionBtn.innerText = "Tangentodial function";
-            tanFunctionBtn.type = "button";
-            tanFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            tanFunctionBtn.onclick = () => { plt.addTan() };
-            node.appendChild(tanFunctionBtn)
+                var tanFunctionBtn = document.createElement("button");
+                tanFunctionBtn.innerText = "Tangentodial function";
+                tanFunctionBtn.type = "button";
+                tanFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                tanFunctionBtn.onclick = () => { plt.addTan() };
+                node.appendChild(tanFunctionBtn)
 
-            var expFunctionBtn = document.createElement("button");
-            expFunctionBtn.innerText = "Exponential function";
-            expFunctionBtn.type = "button";
-            expFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            expFunctionBtn.onclick = () => { plt.addExp() };
-            node.appendChild(expFunctionBtn)
+                var expFunctionBtn = document.createElement("button");
+                expFunctionBtn.innerText = "Exponential function";
+                expFunctionBtn.type = "button";
+                expFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                expFunctionBtn.onclick = () => { plt.addExp() };
+                node.appendChild(expFunctionBtn)
 
-            var recipFunctionBtn = document.createElement("button");
-            recipFunctionBtn.innerText = "Reciprocal function";
-            recipFunctionBtn.type = "button";
-            recipFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-            recipFunctionBtn.onclick = () => { plt.addReci() };
-            node.appendChild(recipFunctionBtn)
+                var recipFunctionBtn = document.createElement("button");
+                recipFunctionBtn.innerText = "Reciprocal function";
+                recipFunctionBtn.type = "button";
+                recipFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                recipFunctionBtn.onclick = () => { plt.addReci() };
+                node.appendChild(recipFunctionBtn)
+            }
 
             var c = p.createCanvas(dims.w, dims.h)
             c.elt.addEventListener("mousedown", () => {
