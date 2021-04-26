@@ -75,9 +75,16 @@ const createCummulativeFrequencyDiagram = (() => {
     const sketch = p => {
         p.setup = () => {
             plt = new Plot(creationData, p, updateHiddenInputs);
-            //window.plt = plt;
+            window.plt = plt;
 
             if (creationData.interactive) {
+                var pointBtn = document.createElement("button");
+                pointBtn.innerText = "Clear";
+                pointBtn.type = "button";
+                pointBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                pointBtn.onclick = () => { plt.clear() };
+                node.appendChild(pointBtn)
+
                 var pointBtn = document.createElement("button");
                 pointBtn.innerText = "●";
                 pointBtn.type = "button";
@@ -505,6 +512,12 @@ class Plot {
 
     resize() {}
 
+    clear() {
+        this.points = [];
+        this.lines = [];
+        this.functions = [];
+    }
+
     drawArrow(base, vec, myColor) {
         var p = this.p;
 
@@ -645,7 +658,13 @@ class Coordinate_Canvas {
         this.update = update;
 
         this.x_axis = x_axis;
+        this.x_axis.start -= this.x_axis.increment / 2;
+        this.x_axis.end += this.x_axis.increment / 2;
+
         this.y_axis = y_axis;
+        this.y_axis.start -= this.y_axis.increment / 2;
+        this.y_axis.end += this.y_axis.increment / 2;
+
         this.quadrants = quadrants;
         this.showGrid = showGrid;
         this.snapToGrid = snapToGrid;
@@ -677,19 +696,21 @@ class Coordinate_Canvas {
         if (this.quadrants == "full") {
             x_axis_pos = 0;
             y_axis_pos = 0;
-        } else if (this.quadrants == 1) {
-            x_axis_pos = this.x_axis.start;
-            y_axis_pos = this.y_axis.start;
-        } else if (this.quadrants == 2) {
-            x_axis_pos = this.x_axis.end;
-            y_axis_pos = this.y_axis.start;
-        } else if (this.quadrants == 3) {
-            x_axis_pos = this.x_axis.end;
-            y_axis_pos = this.y_axis.end;
-        } else if (this.quadrants == 4) {
-            x_axis_pos = this.x_axis.start;
-            y_axis_pos = this.y_axis.end;
-        } else if (this.quadrants == "line") {
+        }
+        /*else if (this.quadrants == 1) {
+                   x_axis_pos = this.x_axis.start;
+                   y_axis_pos = this.y_axis.start;
+               } else if (this.quadrants == 2) {
+                   x_axis_pos = this.x_axis.end;
+                   y_axis_pos = this.y_axis.start;
+               } else if (this.quadrants == 3) {
+                   x_axis_pos = this.x_axis.end;
+                   y_axis_pos = this.y_axis.end;
+               } else if (this.quadrants == 4) {
+                   x_axis_pos = this.x_axis.start;
+                   y_axis_pos = this.y_axis.end;
+               } */
+        else if (this.quadrants == "line") {
             this.x_axis.show = true;
 
             this.y_axis.show = false;
@@ -697,6 +718,9 @@ class Coordinate_Canvas {
 
             x_axis_pos = 0;
             y_axis_pos = (this.y_axis.start + this.y_axis.end) / 2;
+        } else {
+            x_axis_pos = 0;
+            y_axis_pos = 0;
         }
         this.x_axis_pos = x_axis_pos;
         this.y_axis_pos = y_axis_pos;
@@ -766,8 +790,9 @@ class Coordinate_Canvas {
                         p.fill(labelTextColor);
                         p.text(rounded, x - p.textWidth(rounded) / 2, ya + 15);
                     } else {
+                        /*
                         p.fill(labelTextColor);
-                        p.text(rounded, x + 3, ya + 15);
+                        p.text(rounded, x + 3, ya + 15);*/
                     }
                     p.pop();
                 }
@@ -807,7 +832,8 @@ class Coordinate_Canvas {
                         p.fill(labelTextColor);
                         p.text(rounded, xa - p.textWidth(rounded) - 5, y + 4);
                     } else {
-                        p.text(rounded, xa - p.textWidth(rounded) - 5, y - 4);
+                        /*
+                        p.text(rounded, xa - p.textWidth(rounded) - 5, y - 4);*/
                     }
                     p.pop();
                 }
@@ -871,8 +897,6 @@ class Coordinate_Canvas {
     }
 
     click() {}
-
-    resize() {}
 
     resize() {}
 }
