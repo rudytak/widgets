@@ -77,6 +77,13 @@ const createCummulativeFrequencyDiagram = (() => {
 
             if (creationData.interactive) {
                 var solidBtn = document.createElement("button");
+                solidBtn.innerText = "Clear";
+                solidBtn.type = "button";
+                solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                solidBtn.onclick = () => { ineq.clear() };
+                node.appendChild(solidBtn)
+
+                var solidBtn = document.createElement("button");
                 solidBtn.innerText = "─ ↑";
                 solidBtn.type = "button";
                 solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
@@ -170,6 +177,7 @@ class Inequalities {
 
         this.hoverPoint = null;
 
+        var mo = { x: p.mouseX, y: p.mouseY }
         var s = this.canv.snap(p.mouseX, p.mouseY)
         var mouse = this.canv.getInvPos(s.x, s.y);
         if (this.dragPoint != null) {
@@ -215,7 +223,7 @@ class Inequalities {
                 p.push();
                 p.strokeWeight(10);
                 p.stroke(201, 45, 24)
-                if (p.dist(p1.x, p1.y, s.x, s.y) < 10 && this.hoverPoint == null && this.interactive) {
+                if (p.dist(p1.x, p1.y, mo.x, mo.y) < 10 && this.hoverPoint == null && this.interactive) {
                     this.hoverLine = l;
                     this.hoverPoint = 1;
                     p.strokeWeight(15);
@@ -226,7 +234,7 @@ class Inequalities {
                 p.push();
                 p.strokeWeight(10);
                 p.stroke(201, 45, 24)
-                if (p.dist(p2.x, p2.y, s.x, s.y) < 10 && this.hoverPoint == null && this.interactive) {
+                if (p.dist(p2.x, p2.y, mo.x, mo.y) < 10 && this.hoverPoint == null && this.interactive) {
                     this.hoverLine = l;
                     this.hoverPoint = 2;
                     p.strokeWeight(15);
@@ -334,6 +342,10 @@ class Inequalities {
         this.add = true;
         this.line_type = lineType;
         this.line_direction = direction;
+    }
+
+    clear() {
+        this.lines = []
     }
 
     resize() {}
