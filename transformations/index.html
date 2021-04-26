@@ -1,74 +1,80 @@
-<!DOCTYPE html><html lang="en"><head>
-  <script src="p5.js"></script>
-  <script src="p5.sound.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="p5.js"></script>
+    <script src="p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8">
 
 </head>
 
 <body>
-  <div id="widget-container" style="cursor: pointer;">
-    <input id="transformations-shape-A-points" type="hidden" autocomplete="off">
-    <input id="transformations-shape-B-points" type="hidden" autocomplete="off">
-  </div>
-  <script>
-    // START - VALUES FROM BACKEND //
-    // segments: 2 to 5 (values >= 10 degrees)
-    var canvasData = {
-      quadrants: 1,
-      x_axis: {
-        start: 0,
-        end: 10,
-        increment: 1,
-        show: true,
-        label: "X"
-      },
-      y_axis: {
-        start: 0,
-        end: 10,
-        increment: 1,
-        show: true,
-        label: "Y"
-      },
-      showGrid: true,
-      snapToGrid: true,
-      axisNumbering: true
-    }
-    var shapeA = {
-      primary_col: "#cccc00",
-      secondary_col: "#ffff00",
-      points: [{
-        x: 1,
-        y: 1
-      }, {
-        x: 1,
-        y: 2
-      }, {
-        x: 2,
-        y: 1
-      }]
-    }
-    var shapeB = {
-      primary_col: "#00cc00",
-      secondary_col: "#00ff00",
-      points: [{
-        x: 3,
-        y: 3
-      }, {
-        x: 3,
-        y: 6
-      }, {
-        x: 6,
-        y: 3
-      }]
-    }
+    <div id="widget-container" style="cursor: pointer;">
+        <input id="transformations-shape-A-points" type="hidden" autocomplete="off">
+        <input id="transformations-shape-B-points" type="hidden" autocomplete="off">
+    </div>
+    <script>
+        // START - VALUES FROM BACKEND //
+        // segments: 2 to 5 (values >= 10 degrees)
+        var canvasData = {
+            quadrants: 1,
+            x_axis: {
+                start: 0,
+                end: 10,
+                increment: 1,
+                show: true,
+                label: "X"
+            },
+            y_axis: {
+                start: 0,
+                end: 10,
+                increment: 1,
+                show: true,
+                label: "Y"
+            },
+            showGrid: true,
+            snapToGrid: true,
+            axisNumbering: true
+        }
+        var shapeA = {
+            primary_col: "#cccc00",
+            secondary_col: "#ffff00",
+            points: [{
+                x: 1,
+                y: 1
+            }, {
+                x: 1,
+                y: 2
+            }, {
+                x: 2,
+                y: 1
+            }]
+        }
+        var shapeB = {
+            primary_col: "#00cc00",
+            secondary_col: "#00ff00",
+            points: [{
+                x: 3,
+                y: 3
+            }, {
+                x: 3,
+                y: 6
+            }, {
+                x: 6,
+                y: 3
+            }]
+        }
+        var interactive = true
 
-    // colors: color palette used by the pie chart 
-    // (if this is not provided globally it will still work)
-    // const pieColors = ["#00ACED", "#F26363", "#69B516", "#FF8F41", "#A659FF"]
-    // END - VALUES FROM BACKEND //
-  </script>
-  <script src="sketch.js"></script>
+        // colors: color palette used by the pie chart 
+        // (if this is not provided globally it will still work)
+        // const pieColors = ["#00ACED", "#F26363", "#69B516", "#FF8F41", "#A659FF"]
+        // END - VALUES FROM BACKEND //
+    </script>
+    <script src="sketch.js"></script>
 
 
-</body></html>
+</body>
+
+</html>

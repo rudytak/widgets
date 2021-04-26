@@ -67,7 +67,8 @@ const createCummulativeFrequencyDiagram = (() => {
     var creationData = {
         canvasData: canvasData,
         shapeA: shapeA,
-        shapeB: shapeB
+        shapeB: shapeB,
+        interactive: interactive
     }
 
     // Define the p5 sketch methods
@@ -128,7 +129,8 @@ class Transformation {
     constructor({
         canvasData,
         shapeA,
-        shapeB
+        shapeB,
+        interactive
     }, p, update) {
         this.p = p;
         this.update = update;
@@ -141,7 +143,7 @@ class Transformation {
         this.hoverPoint = null;
         this.dragPoint = null;
 
-        this.interactive = true;
+        this.interactive = interactive;
 
         this.lines = [];
         this.v1 = undefined;
