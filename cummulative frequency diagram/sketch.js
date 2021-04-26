@@ -118,7 +118,7 @@ class Cumm_Frq_Dia {
         this.update = update;
 
         this.canv = new Coordinate_Canvas(canvasData, p, () => {});
-        this.canv.snapToGrid = false;
+        //this.canv.snapToGrid = false;
         this.points = points;
 
         this.hoverPoint = null;
@@ -135,7 +135,9 @@ class Cumm_Frq_Dia {
 
         if (this.dragPoint != null) {
             if (this.interactive) {
-                this.points[this.dragPoint] = this.canv.getInvPos(p.mouseX, p.mouseY);
+                var pos = this.canv.getPos();
+                var sna = this.canv.snap(p.mouseX, p.mouseY);
+                this.points[this.dragPoint] = this.canv.getInvPos(sna.x, sna.y);
                 this.update(this.out());
             }
         }
