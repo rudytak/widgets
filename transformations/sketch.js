@@ -78,6 +78,13 @@ const createCummulativeFrequencyDiagram = (() => {
 
             if (creationData.interactive) {
                 var solidBtn = document.createElement("button");
+                solidBtn.innerText = "Clear";
+                solidBtn.type = "button";
+                solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                solidBtn.onclick = () => { trans.clear() };
+                node.appendChild(solidBtn)
+
+                var solidBtn = document.createElement("button");
                 solidBtn.innerText = "─";
                 solidBtn.type = "button";
                 solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
@@ -324,6 +331,10 @@ class Transformation {
     }
 
     resize() {}
+
+    clear() {
+        this.lines = []
+    }
 }
 
 class Coordinate_Canvas {
