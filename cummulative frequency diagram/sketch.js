@@ -164,8 +164,8 @@ class Cumm_Frq_Dia {
                 } else p.strokeWeight(10);
 
                 p.point(pos.x, pos.y)
+                p.pop();
             }
-            p.pop();
         }
 
         var pos = this.canv.getPos(this.points[this.points.length - 1].x, this.points[this.points.length - 1].y);
