@@ -155,14 +155,16 @@ class Cumm_Frq_Dia {
             var pos = this.canv.getPos(this.points[i].x, this.points[i].y);
             p.curveVertex(pos.x, pos.y);
 
-            p.push();
-            p.stroke(201, 45, 24)
-            if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.interactive) {
-                p.strokeWeight(15);
-                this.hoverPoint = i;
-            } else p.strokeWeight(10);
+            if (this.interactive) {
+                p.push();
+                p.stroke(201, 45, 24)
+                if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.interactive) {
+                    p.strokeWeight(15);
+                    this.hoverPoint = i;
+                } else p.strokeWeight(10);
 
-            p.point(pos.x, pos.y)
+                p.point(pos.x, pos.y)
+            }
             p.pop();
         }
 
