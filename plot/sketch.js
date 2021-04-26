@@ -74,7 +74,8 @@ const createCummulativeFrequencyDiagram = (() => {
     // Define the p5 sketch methods
     const sketch = p => {
         p.setup = () => {
-            plt = new Plot(creationData, p, updateHiddenInputs)
+            plt = new Plot(creationData, p, updateHiddenInputs);
+            //window.plt = plt;
 
             if (creationData.interactive) {
                 var pointBtn = document.createElement("button");
@@ -387,18 +388,20 @@ class Plot {
                 p.pop();
             }
 
-            for (var poi of f.points) {
-                p.push();
-                var pos = this.canv.getPos(poi.x, poi.y);
+            if (this.interactive) {
+                for (var poi of f.points) {
+                    p.push();
+                    var pos = this.canv.getPos(poi.x, poi.y);
 
-                p.stroke(201, 45, 24)
-                p.strokeWeight(10);
-                if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
-                    this.hoverPoint = f.points[f.points.indexOf(poi)];
-                    p.strokeWeight(15);
+                    p.stroke(201, 45, 24)
+                    p.strokeWeight(10);
+                    if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                        this.hoverPoint = f.points[f.points.indexOf(poi)];
+                        p.strokeWeight(15);
+                    }
+                    p.point(pos.x, pos.y);
+                    p.pop();
                 }
-                p.point(pos.x, pos.y);
-                p.pop();
             }
         }
     }
