@@ -233,7 +233,8 @@ class Inequalities {
 
             if (l.type == "dashed") {
                 const ctx = p.drawingContext;
-                ctx.setLineDash([10, 10]);
+                p.strokeWeight(3)
+                ctx.setLineDash([20, 20]);
 
                 if (dx == 0) {
                     p.line(p1.x, 0, p1.x, p.height);

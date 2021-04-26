@@ -291,7 +291,8 @@ class Plot {
 
             if (l.type == "dashed") {
                 const ctx = p.drawingContext;
-                ctx.setLineDash([10, 5]);
+                p.strokeWeight(3)
+                ctx.setLineDash([20, 20]);
 
                 p.line(p1.x, p1.y, p2.x, p2.y);
 
