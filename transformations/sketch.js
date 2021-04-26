@@ -193,17 +193,19 @@ class Transformation {
         }
         p.endShape(p.CLOSE);
 
-        p.fill(201, 45, 24)
-        for (var poi of this.sB.points) {
-            var pos = this.canv.getPos(poi.x, poi.y)
+        if (this.interactive) {
+            p.fill(201, 45, 24)
+            for (var poi of this.sB.points) {
+                var pos = this.canv.getPos(poi.x, poi.y)
 
-            p.stroke(201, 45, 24)
-            p.strokeWeight(10);
-            if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
-                this.hoverPoint = this.sB.points[this.sB.points.indexOf(poi)];
-                p.strokeWeight(15);
+                p.stroke(201, 45, 24)
+                p.strokeWeight(10);
+                if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                    this.hoverPoint = this.sB.points[this.sB.points.indexOf(poi)];
+                    p.strokeWeight(15);
+                }
+                p.point(pos.x, pos.y);
             }
-            p.point(pos.x, pos.y);
         }
 
         p.stroke(labelTextColor);
