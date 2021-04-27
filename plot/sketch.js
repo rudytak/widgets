@@ -78,12 +78,12 @@ const createCummulativeFrequencyDiagram = (() => {
             window.plt = plt;
 
             if (creationData.interactive) {
-                var pointBtn = document.createElement("button");
-                pointBtn.innerText = "Clear";
-                pointBtn.type = "button";
-                pointBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-                pointBtn.onclick = () => { plt.clear() };
-                node.appendChild(pointBtn)
+                var clrBtn = document.createElement("button");
+                clrBtn.innerText = "Clear";
+                clrBtn.type = "button";
+                clrBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                clrBtn.onclick = () => { plt.clear() };
+                node.appendChild(clrBtn)
 
                 var pointBtn = document.createElement("button");
                 pointBtn.innerText = "●";
@@ -154,6 +154,20 @@ const createCummulativeFrequencyDiagram = (() => {
                 recipFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
                 recipFunctionBtn.onclick = () => { plt.addReci() };
                 node.appendChild(recipFunctionBtn)
+
+                var tangentBtn = document.createElement("button");
+                tangentBtn.innerText = "Tangent";
+                tangentBtn.type = "button";
+                tangentBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                tangentBtn.onclick = () => { plt.addTangent() };
+                node.appendChild(tangentBtn)
+
+                var nrmlBtn = document.createElement("button");
+                nrmlBtn.innerText = "Normal";
+                nrmlBtn.type = "button";
+                nrmlBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                nrmlBtn.onclick = () => { plt.addNormal() };
+                node.appendChild(nrmlBtn)
             }
 
             var c = p.createCanvas(dims.w, dims.h)
@@ -215,10 +229,14 @@ class Plot {
 
         this.points = input_points;
 
+        this.adding_tangent = false;
+        this.tangent = undefined;
+
         this.functions = [];
     }
 
     draw() {
+        //this.tangent = undefined;
         var p = this.p;
         this.canv.draw();
 
@@ -258,64 +276,15 @@ class Plot {
             p.pop();
         }
 
-        // DRAW LINES
-        p.stroke(labelTextColor);
-        p.fill(255, 0, 0, 64);
-        p.strokeWeight(2);
-        var lin = this.lines;
-        if (this.v1) {
-            lin = this.lines.concat([{
-                x1: this.v1.x,
-                y1: this.v1.y,
-                x2: mouse.x,
-                y2: mouse.y,
-                type: this.line_type
-            }])
-        }
-
-        for (var l of lin) {
-            var p1 = this.canv.getPos(l.x1, l.y1)
-            var p2 = this.canv.getPos(l.x2, l.y2)
-
-            p.push();
-            p.stroke(201, 45, 24)
-            p.strokeWeight(10);
-            if (p.dist(p1.x, p1.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
-                this.hoverLine = l;
-                this.hoverPoint = 1;
-                p.strokeWeight(15);
-            }
-            p.point(p1.x, p1.y);
-            p.pop();
-
-            p.push();
-            p.stroke(201, 45, 24)
-            p.strokeWeight(10);
-            if (p.dist(p2.x, p2.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
-                this.hoverLine = l;
-                this.hoverPoint = 2;
-                p.strokeWeight(15);
-            }
-            p.point(p2.x, p2.y);
-            p.pop();
-
-            if (l.type == "dashed") {
-                const ctx = p.drawingContext;
-                p.strokeWeight(3)
-                ctx.setLineDash([20, 20]);
-
-                p.line(p1.x, p1.y, p2.x, p2.y);
-
-                ctx.setLineDash([10, 0]);
-            } else if (l.type == "vector") {
-                this.drawArrow(p.createVector(p1.x, p1.y), p.createVector(p2.x - p1.x, p2.y - p1.y), labelTextColor)
-            } else {
-                p.line(p1.x, p1.y, p2.x, p2.y);
+        var func = this.functions;
+        var tanDist = 5;
+        if (this.adding_tangent) {
+            if (this.tangent) {
+                func = func.concat([this.tangent])
             }
         }
-
         //DRAW FUNCTIONS
-        for (var f of this.functions) {
+        for (var f of func) {
             try {
                 var coef;
                 switch (f.type) {
@@ -376,8 +345,25 @@ class Plot {
                             beg = true;
                         }
                         p.vertex(pos.x, pos.y);
+
+                        if (this.adding_tangent && p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < tanDist) {
+                            tanDist = p.dist(pos.x, pos.y, p.mouseX, p.mouseY);
+                            if (f != this.tangent) {
+                                this.tangent = {
+                                    points: [{
+                                        x: i - this.canv.x_axis.increment / 25,
+                                        y: lastVal
+                                    }, {
+                                        x: i,
+                                        y: value
+                                    }],
+                                    type: "polynomial"
+                                }
+                            }
+                        }
                     }
                 }
+
                 p.endShape();
             } catch (e) {
                 //if (p.frameCount % 100 == 0) console.log(e)
@@ -411,9 +397,70 @@ class Plot {
                 }
             }
         }
+
+        // DRAW LINES
+        p.stroke(labelTextColor);
+        p.fill(255, 0, 0, 64);
+        p.strokeWeight(2);
+        var lin = this.lines;
+        if (this.v1) {
+            lin = this.lines.concat([{
+                x1: this.v1.x,
+                y1: this.v1.y,
+                x2: mouse.x,
+                y2: mouse.y,
+                type: this.line_type
+            }])
+        }
+        for (var l of lin) {
+            var p1 = this.canv.getPos(l.x1, l.y1)
+            var p2 = this.canv.getPos(l.x2, l.y2)
+
+            p.push();
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
+            if (p.dist(p1.x, p1.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                this.hoverLine = l;
+                this.hoverPoint = 1;
+                p.strokeWeight(15);
+            }
+            p.point(p1.x, p1.y);
+            p.pop();
+
+            p.push();
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
+            if (p.dist(p2.x, p2.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                this.hoverLine = l;
+                this.hoverPoint = 2;
+                p.strokeWeight(15);
+            }
+            p.point(p2.x, p2.y);
+            p.pop();
+
+            if (l.type == "dashed") {
+                const ctx = p.drawingContext;
+                p.strokeWeight(3)
+                ctx.setLineDash([20, 20]);
+
+                p.line(p1.x, p1.y, p2.x, p2.y);
+
+                ctx.setLineDash([10, 0]);
+            } else if (l.type == "vector") {
+                this.drawArrow(p.createVector(p1.x, p1.y), p.createVector(p2.x - p1.x, p2.y - p1.y), labelTextColor)
+            } else {
+                p.line(p1.x, p1.y, p2.x, p2.y);
+            }
+        }
     }
 
     click() {
+        if (this.adding_tangent) {
+            this.adding_tangent = false;
+            this.functions.push(this.tangent)
+            return;
+        }
+
         var s = this.canv.snap(this.p.mouseX, this.p.mouseY)
         var m = this.canv.getInvPos(s.x, s.y);
 
@@ -455,6 +502,14 @@ class Plot {
 
     out() {
         return [JSON.stringify(this.lines)];
+    }
+
+    addTangent() {
+        this.adding_tangent = true;
+    }
+
+    addNormal() {
+
     }
 
     addLine(lineType) {
