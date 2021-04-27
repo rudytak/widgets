@@ -230,7 +230,9 @@ class Plot {
         this.points = input_points;
 
         this.adding_tangent = false;
+        this.adding_normal = false
         this.tangent = undefined;
+        this.normal = undefined;
 
         this.functions = [];
     }
@@ -260,27 +262,17 @@ class Plot {
             }
         }
 
-        //DRAW POINTS
-        p.stroke(labelTextColor);
-        for (var poi of this.points) {
-            p.push();
-            p.stroke(201, 45, 24)
-            p.strokeWeight(10);
-            var pos = this.canv.getPos(poi.x, poi.y);
-            if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
-                this.hoverLine = null;
-                this.hoverPoint = poi;
-                p.strokeWeight(15);
-            }
-            p.point(pos.x, pos.y);
-            p.pop();
-        }
-
-        var func = this.functions;
+        var func = [...this.functions];
         var tanDist = 5;
+        var normDist = 5;
         if (this.adding_tangent) {
             if (this.tangent) {
-                func = func.concat([this.tangent])
+                func.unshift(this.tangent)
+            }
+        }
+        if (this.adding_normal) {
+            if (this.normal) {
+                func.unshift(this.normal)
             }
         }
         //DRAW FUNCTIONS
@@ -348,14 +340,44 @@ class Plot {
 
                         if (this.adding_tangent && p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < tanDist) {
                             tanDist = p.dist(pos.x, pos.y, p.mouseX, p.mouseY);
-                            if (f != this.tangent) {
+
+                            if (!this.tangent ||
+                                !(this.tangent.points[0].x == f.points[0].x &&
+                                    this.tangent.points[0].y == f.points[0].y &&
+                                    this.tangent.points[1].x == f.points[1].x &&
+                                    this.tangent.points[1].y == f.points[1].y)) {
+                                var dx = this.canv.x_axis.increment / 25;
+                                var dy = value - lastVal
                                 this.tangent = {
                                     points: [{
                                         x: i - this.canv.x_axis.increment / 25,
                                         y: lastVal
                                     }, {
-                                        x: i,
-                                        y: value
+                                        x: i - this.canv.x_axis.increment / 25 + dx,
+                                        y: lastVal + dy
+                                    }],
+                                    type: "polynomial"
+                                }
+                            }
+                        } else if (this.adding_normal && p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < normDist) {
+                            if (!this.normal ||
+                                !(this.normal.points[0].x == f.points[0].x &&
+                                    this.normal.points[0].y == f.points[0].y &&
+                                    this.normal.points[1].x == f.points[1].x &&
+                                    this.normal.points[1].y == f.points[1].y)) {
+
+                                normDist = p.dist(pos.x, pos.y, p.mouseX, p.mouseY);
+
+                                var dx = this.canv.x_axis.increment / 25;
+                                var dy = value - lastVal
+
+                                this.normal = {
+                                    points: [{
+                                        x: i - this.canv.x_axis.increment / 25,
+                                        y: lastVal
+                                    }, {
+                                        x: i - this.canv.x_axis.increment / 25 + dy,
+                                        y: lastVal - dx
                                     }],
                                     type: "polynomial"
                                 }
@@ -452,12 +474,33 @@ class Plot {
                 p.line(p1.x, p1.y, p2.x, p2.y);
             }
         }
+
+        //DRAW POINTS
+        p.stroke(labelTextColor);
+        for (var poi of this.points) {
+            p.push();
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
+            var pos = this.canv.getPos(poi.x, poi.y);
+            if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                this.hoverLine = null;
+                this.hoverPoint = poi;
+                p.strokeWeight(15);
+            }
+            p.point(pos.x, pos.y);
+            p.pop();
+        }
     }
 
     click() {
         if (this.adding_tangent) {
             this.adding_tangent = false;
             this.functions.push(this.tangent)
+            return;
+        }
+        if (this.adding_normal) {
+            this.adding_normal = false;
+            this.functions.push(this.normal)
             return;
         }
 
@@ -506,10 +549,12 @@ class Plot {
 
     addTangent() {
         this.adding_tangent = true;
+        this.adding_normal = false;
     }
 
     addNormal() {
-
+        this.adding_normal = true;
+        this.adding_tangent = false;
     }
 
     addLine(lineType) {
