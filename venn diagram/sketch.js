@@ -27,7 +27,7 @@ const createVennDiagram = (() => {
         return themes[theme]
     }
 
-    const defaultTheme = "light"
+    const defaultTheme = "dark"
 
     const setThemeColors = (theme) => {
         const themeColors = getThemeColors(theme)
@@ -73,6 +73,7 @@ const createVennDiagram = (() => {
             c.elt.onclick = () => {
                 venn.click();
             }
+            c.elt.style.cursor = "pointer"
 
             venn = new VennDiagram(creationData, p, updateHiddenInputs);
         }
@@ -184,6 +185,7 @@ class VennDiagram {
         p.noFill();
 
         // Draw circles
+        p.stroke(labelTextColor);
         p.ellipse(p.width / 4, p.height / 2, p.width / 3);
         p.ellipse(p.width / 2, p.height / 2, p.width / 3);
 

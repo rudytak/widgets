@@ -1,34 +1,40 @@
-<html lang="en"><head></head><body>!DOCTYPE html&gt;
+<html lang="en">
 
-  
+<head></head>
+
+<body>!DOCTYPE html&gt;
+
+
     <script src="p5.js"></script>
     <script src="p5.sound.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8">
 
-  
-  
-    <div id="widget-container" style="cursor: pointer;">
-      <input id="venn-diagram-segment-1" name="segment-1" type="hidden" autocomplete="off">
-      <input id="venn-diagram-segment-2" name="segment-2" type="hidden" autocomplete="off">
-      <input id="venn-diagram-segment-3" name="segment-3" type="hidden" autocomplete="off">
-      <input id="venn-diagram-segment-4" name="segment-4" type="hidden" autocomplete="off">
+
+
+    <div id="widget-container">
+        <input id="venn-diagram-segment-1" name="segment-1" type="hidden" autocomplete="off">
+        <input id="venn-diagram-segment-2" name="segment-2" type="hidden" autocomplete="off">
+        <input id="venn-diagram-segment-3" name="segment-3" type="hidden" autocomplete="off">
+        <input id="venn-diagram-segment-4" name="segment-4" type="hidden" autocomplete="off">
     </div>
     <script>
-      // START - VALUES FROM BACKEND //
-      // segments: 2 to 5 (values >= 10 degrees)
-      var labels = ["Label1", "Label2", "Label3"];
-      var values = ["\\frac{1}{253}", "3", "\\frac{-1}{15}", "-1"];
-      var interactive = true;
-      var colors = ["#00ACED", "#F26363", "#69B516", "#FF8F41"];
-      var coloredRegions = [true, true, false, false]
+        // START - VALUES FROM BACKEND //
+        // segments: 2 to 5 (values >= 10 degrees)
+        var labels = ["Label1", "Label2", "Label3"];
+        var values = ["\\frac{1}{253}", "3", "\\frac{-1}{15}", "-1"];
+        var interactive = true;
+        var colors = ["#00ACED", "#F26363", "#69B516", "#FF8F41"];
+        var coloredRegions = [true, true, false, false]
 
-      // colors: color palette used by the pie chart 
-      // (if this is not provided globally it will still work)
-      // const pieColors = ["#00ACED", "#F26363", "#69B516", "#FF8F41", "#A659FF"]
-      // END - VALUES FROM BACKEND //
+        // colors: color palette used by the pie chart 
+        // (if this is not provided globally it will still work)
+        // const pieColors = ["#00ACED", "#F26363", "#69B516", "#FF8F41", "#A659FF"]
+        // END - VALUES FROM BACKEND //
     </script>
     <script src="sketch.js"></script>
-  
 
-</body></html>
+
+</body>
+
+</html>
