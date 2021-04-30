@@ -131,8 +131,8 @@ class VennDiagram {
                 this.colorID++;
             }
         }
-      
-      this.update(this.out());
+
+        this.update(this.out());
     }
 
     draw() {
