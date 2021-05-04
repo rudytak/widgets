@@ -2,7 +2,7 @@ var backgroundColor, labelTextColor;
 const createVennDiagram = (() => {
     const node = document.getElementById('widget-container')
     const hiddenInputs = ["venn-diagram-segment-1", "venn-diagram-segment-2", "venn-diagram-segment-3", "venn-diagram-segment-4"]
-    const heightToWidthRatio = 5 / 8
+    const heightToWidthRatio = 6.5 / 8
 
     const updateHiddenInputs = (output) => {
         for (var i = 0; i < hiddenInputs.length; i++) {
@@ -27,7 +27,7 @@ const createVennDiagram = (() => {
         return themes[theme]
     }
 
-    const defaultTheme = "dark"
+    const defaultTheme = "light"
 
     const setThemeColors = (theme) => {
         const themeColors = getThemeColors(theme)
@@ -47,7 +47,7 @@ const createVennDiagram = (() => {
     const getHeightOfCanvas = () => {
         const windowHeight = window.innerHeight || document.documentElement.clientHeight ||
             document.body.clientHeight
-        const maxHeight = windowHeight * (5.5 / 10)
+        const maxHeight = windowHeight * (7 / 10)
 
         let height = node.clientWidth * heightToWidthRatio
 
@@ -73,7 +73,6 @@ const createVennDiagram = (() => {
             c.elt.onclick = () => {
                 venn.click();
             }
-            c.elt.style.cursor = "pointer"
 
             venn = new VennDiagram(creationData, p, updateHiddenInputs);
         }
@@ -185,7 +184,6 @@ class VennDiagram {
         p.noFill();
 
         // Draw circles
-        p.stroke(labelTextColor);
         p.ellipse(p.width / 4, p.height / 2, p.width / 3);
         p.ellipse(p.width / 2, p.height / 2, p.width / 3);
 
