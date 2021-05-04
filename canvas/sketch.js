@@ -2,7 +2,7 @@ var backgroundColor, labelTextColor;
 const createCanvas = (() => {
     const node = document.getElementById('widget-container')
     const hiddenInputs = []
-    const heightToWidthRatio = 5 / 8
+    const heightToWidthRatio = 6.5 / 8
 
     const updateHiddenInputs = (output) => {
         for (var i = 0; i < hiddenInputs.length; i++) {
@@ -47,7 +47,7 @@ const createCanvas = (() => {
     const getHeightOfCanvas = () => {
         const windowHeight = window.innerHeight || document.documentElement.clientHeight ||
             document.body.clientHeight
-        const maxHeight = windowHeight * (5.5 / 10)
+        const maxHeight = windowHeight * (7 / 10)
 
         let height = node.clientWidth * heightToWidthRatio
 
@@ -108,6 +108,10 @@ const createCanvas = (() => {
 })()
 
 class Coordinate_Canvas {
+    // takes in: quadrants to show (full/line/1/2/3/4)
+    // x axis data
+    // y axis data
+    // snap to grid, show grid, aixs numbering (true/false)
     constructor({
         quadrants,
         x_axis = {
@@ -128,6 +132,7 @@ class Coordinate_Canvas {
         snapToGrid,
         axisNumbering
     }, p, update) {
+        // Set all the appropriate values
         this.p = p;
         this.update = update;
 
@@ -161,10 +166,12 @@ class Coordinate_Canvas {
     draw() {
         var p = this.p;
 
+        // set the colors
         p.background(backgroundColor)
         p.stroke(labelTextColor);
         p.strokeWeight(2);
 
+        // determine the positions of the axes onb the type
         var x_axis_pos;
         var y_axis_pos;
         if (this.quadrants == "full") {
@@ -205,21 +212,27 @@ class Coordinate_Canvas {
         // X axis
         if (this.x_axis.show) {
             if (this.quadrants == "line") {
+                // draw x axis line
                 p.line(0, p.height / 2, p.width, p.height / 2);
 
+                // add axis label
                 p.push();
                 p.fill(labelTextColor);
                 p.noStroke();
                 p.textAlign(p.BOTTOM, p.LEFT);
+                p.textSize(20);
                 p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 5, p.height / 2 - 12)
                 p.pop();
             } else {
+                // draw x axis
                 p.line(0, ya, p.width, ya);
+
 
                 p.push();
                 p.fill(labelTextColor);
                 p.noStroke();
                 p.textAlign(p.TOP, p.LEFT);
+                p.textSize(20);
                 p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 3, ya - 12)
                 p.pop();
             }
@@ -227,12 +240,15 @@ class Coordinate_Canvas {
 
         // Y axis
         if (this.y_axis.show) {
+            // draw y axis line
             p.line(xa, 0, xa, p.height);
 
+            // add axis label
             p.push();
             p.fill(labelTextColor);
             p.noStroke();
             p.textAlign(p.BOTTOM, p.LEFT);
+            p.textSize(20);
             p.text(this.y_axis.label, xa + 5, 12)
             p.pop();
         }
@@ -241,14 +257,18 @@ class Coordinate_Canvas {
         p.strokeWeight(1);
         //X lines
         for (var i = this.x_axis.increment * p.floor(this.x_axis.start / this.x_axis.increment); i <= this.x_axis.end; i += this.x_axis.increment) {
+            // draw all the lines perpendicular to x axis
             var x = p.map(i, this.x_axis.start, this.x_axis.end, 0, p.width);
 
+            //draw the line
             if (this.showGrid) {
                 p.line(x, 0, x, p.height);
             }
 
+            // handle axis numbering
             if (this.axisNumbering) {
                 if (this.x_axis.show) {
+                    // calculate rounded value
                     var rounding = this.x_axis.increment.toString().split(".")[1];
                     if (!rounding) rounding = 0;
                     else rounding = rounding.length;
@@ -256,13 +276,16 @@ class Coordinate_Canvas {
                     p.push();
                     p.noStroke();
                     var rounded = Math.round(i * 10 ** rounding) / 10 ** rounding
+                        // not at origin
                     if (rounded != x_axis_pos) {
-                        var b = { x: x - p.textWidth(rounded) / 2, y: ya + 15 - 12, w: p.textWidth(rounded), h: 13 }
+                        // draw the rounded value
+                        p.textSize(20);
+                        var b = { x: x - p.textWidth(rounded) / 2, y: ya + 22 - 12, w: p.textWidth(rounded), h: 13 }
                         p.fill(backgroundColor);
                         p.rect(b.x, b.y, b.w, b.h);
 
                         p.fill(labelTextColor);
-                        p.text(rounded, x - p.textWidth(rounded) / 2, ya + 15);
+                        p.text(rounded, x - p.textWidth(rounded) / 2, ya + 22);
                     } else {
                         /*
                         p.fill(labelTextColor);
@@ -282,14 +305,18 @@ class Coordinate_Canvas {
 
         //Y lines
         for (var i = this.y_axis.increment * p.floor(this.y_axis.start / this.y_axis.increment); i <= this.y_axis.end; i += this.y_axis.increment) {
+            // draw all the lines perpendicular to y axis
             var y = p.map(i, this.y_axis.start, this.y_axis.end, p.height, 0);
 
+            //draw the line
             if (this.showGrid) {
                 p.line(0, y, p.width, y);
             }
 
+            // handle axis numbering
             if (this.axisNumbering) {
                 if (this.y_axis.show) {
+                    // calculate rounded value
                     var rounding = this.y_axis.increment.toString().split(".")[1];
                     if (!rounding) rounding = 0;
                     else rounding = rounding.length;
@@ -298,7 +325,10 @@ class Coordinate_Canvas {
                     p.fill(labelTextColor);
                     p.noStroke();
                     var rounded = Math.round((i) * 10 ** rounding) / 10 ** rounding
+                        // not at origin
                     if (rounded != y_axis_pos) {
+                        // draw the rounded value
+                        p.textSize(20);
                         var b = { x: xa - p.textWidth(rounded) - 6, y: y + 4 - 12, w: p.textWidth(rounded) + 2, h: 13 }
                         p.fill(backgroundColor);
                         p.rect(b.x, b.y, b.w, b.h);
@@ -321,6 +351,7 @@ class Coordinate_Canvas {
             }
         }
 
+        // draw point at the snapped cursor
         var snap = this.snap(p.mouseX, p.mouseY);
         p.strokeWeight(5);
         p.stroke(0)
@@ -330,9 +361,11 @@ class Coordinate_Canvas {
     snap(x, y) {
         var p = this.p;
         if (!this.snapToGrid) {
+            // if jnot snap to grid, return original value
             return { x: x, y: y };
         } else {
             if (this.quadrants == "line") {
+                // handle and calculate the position for line canvas
                 var xa = p.map(this.x_axis_pos, this.x_axis.start, this.x_axis.end, 0, p.width);
                 var xInc = p.map(this.x_axis.increment + this.x_axis.start, this.x_axis.start, this.x_axis.end, 0, p.width);
                 var x_s = Math.round((x - xa) / xInc) * xInc + xa;
@@ -342,6 +375,7 @@ class Coordinate_Canvas {
 
                 return { x: x_s, y: y_s };
             } else {
+                // handle and calculate the position for normal canvas
                 var xa = p.map(0, this.x_axis.start, this.x_axis.end, 0, p.width);
                 var ya = p.map(0, this.y_axis.start, this.y_axis.end, p.height, 0);
 
@@ -357,6 +391,7 @@ class Coordinate_Canvas {
     }
 
     getPos(x, y) {
+        // function for calculating value from coordinate canvas to value on normal canvas
         var y_m = this.p.map(y, this.y_axis.start, this.y_axis.end, this.p.height, 0);
         var x_m = this.p.map(x, this.x_axis.start, this.x_axis.end, 0, this.p.width);
 
@@ -364,6 +399,7 @@ class Coordinate_Canvas {
     }
 
     getInvPos(x, y) {
+        // opposite of getPos()
         var y_m = this.p.map(y, this.p.height, 0, this.y_axis.start, this.y_axis.end);
         var x_m = this.p.map(x, 0, this.p.width, this.x_axis.start, this.x_axis.end);
 
