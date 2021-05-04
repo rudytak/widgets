@@ -1,7 +1,7 @@
 var backgroundColor, labelTextColor;
 const createCummulativeFrequencyDiagram = (() => {
     const node = document.getElementById('widget-container')
-    const hiddenInputs = ["transformations-shape-A-points", "transformations-shape-B-points"]
+    const hiddenInputs = ["transformations-shape-B-points"]
     const heightToWidthRatio = 5 / 8
 
     const updateHiddenInputs = (output) => {
@@ -74,8 +74,10 @@ const createCummulativeFrequencyDiagram = (() => {
     // Define the p5 sketch methods
     const sketch = p => {
         p.setup = () => {
+            // Create instance of the transofrmation calss
             trans = new Transformation(creationData, p, updateHiddenInputs)
 
+            // Add the buttons if interactive
             if (creationData.interactive) {
                 var solidBtn = document.createElement("button");
                 solidBtn.innerText = "Clear";
@@ -85,20 +87,21 @@ const createCummulativeFrequencyDiagram = (() => {
                 node.appendChild(solidBtn)
 
                 var solidBtn = document.createElement("button");
-                solidBtn.innerText = "─";
+                solidBtn.innerText = "Solid line";
                 solidBtn.type = "button";
                 solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
                 solidBtn.onclick = () => { trans.addSolid() };
                 node.appendChild(solidBtn)
 
                 var dashedBtn = document.createElement("button");
-                dashedBtn.innerText = "┄";
+                dashedBtn.innerText = "Dashed line";
                 dashedBtn.type = "button";
                 dashedBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
                 dashedBtn.onclick = () => { trans.addDashed() };
                 node.appendChild(dashedBtn)
             }
 
+            // Create the canvas and add click and release lsiteners
             var c = p.createCanvas(dims.w, dims.h)
             c.elt.addEventListener("mousedown", () => {
                 trans.click();
@@ -111,11 +114,13 @@ const createCummulativeFrequencyDiagram = (() => {
             c.elt.style["margin-top"] = "10px";
         }
 
+        // p5 draw function
         p.draw = () => {
             p.clear()
             trans.draw()
         }
 
+        // resizing the window
         p.windowResized = () => {
             p.resizeCanvas(0, 0)
 
@@ -135,15 +140,18 @@ const createCummulativeFrequencyDiagram = (() => {
 })()
 
 class Transformation {
+    // Data in: canvas data, shape A data, shape B data, interactive (true/false)
     constructor({
         canvasData,
         shapeA,
         shapeB,
         interactive
     }, p, update) {
+        // Save all the values
         this.p = p;
         this.update = update;
 
+        // Create the canvas
         this.canv = new Coordinate_Canvas(canvasData, p, () => {});
 
         this.sA = shapeA;
@@ -162,23 +170,31 @@ class Transformation {
 
     draw() {
         var p = this.p;
+        // draw the canvas
         this.canv.draw();
 
         this.hoverPoint = null;
 
+        // Moving the drag point
         var s = this.canv.snap(p.mouseX, p.mouseY)
         var m = this.canv.getInvPos(s.x, s.y);
         if (this.dragPoint != null) {
             if (this.interactive) {
-                this.dragPoint.x = m.x;
-                this.dragPoint.y = m.y;
+                if (this.hoverLine) {
+                    this.hoverLine["x" + this.dragPoint] = m.x
+                    this.hoverLine["y" + this.dragPoint] = m.y
+                } else {
+                    this.dragPoint.x = m.x;
+                    this.dragPoint.y = m.y;
+                }
                 this.update(this.out());
             }
         }
 
         p.noStroke();
 
-        p.fill(this.sA.secondary_col);
+        // draw shape A
+        p.fill(this.sA.col);
         p.beginShape();
         for (var poi of this.sA.points) {
             var pos = this.canv.getPos(poi.x, poi.y);
@@ -196,7 +212,8 @@ class Transformation {
             } else p.ellipse(pos.x, pos.y, 5, 5);
         }*/
 
-        p.fill(this.sB.secondary_col);
+        // draw shape B
+        p.fill(this.sB.col);
         p.beginShape();
         for (var poi of this.sB.points) {
             var pos = this.canv.getPos(poi.x, poi.y);
@@ -204,6 +221,7 @@ class Transformation {
         }
         p.endShape(p.CLOSE);
 
+        // draw shape B points
         if (this.interactive) {
             p.fill(201, 45, 24)
             for (var poi of this.sB.points) {
@@ -219,6 +237,7 @@ class Transformation {
             }
         }
 
+        // add one more line if we are in the process of adding one
         p.stroke(labelTextColor);
         p.strokeWeight(2);
         var lin = this.lines;
@@ -232,10 +251,35 @@ class Transformation {
             }])
         }
 
+        // draw all the lines
         for (var l of lin) {
+            // get positions of the line points
             var p1 = this.canv.getPos(l.x1, l.y1);
             var p2 = this.canv.getPos(l.x2, l.y2);
 
+            p.push();
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
+            if (p.dist(p1.x, p1.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                this.hoverLine = l;
+                this.hoverPoint = 1;
+                p.strokeWeight(15);
+            }
+            if (this.interactive) p.point(p1.x, p1.y);
+            p.pop();
+
+            p.push();
+            p.stroke(201, 45, 24)
+            p.strokeWeight(10);
+            if (p.dist(p2.x, p2.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                this.hoverLine = l;
+                this.hoverPoint = 2;
+                p.strokeWeight(15);
+            }
+            if (this.interactive) p.point(p2.x, p2.y);
+            p.pop();
+
+            // calculate the line as linear function
             var dy = p1.y - p2.y;
             var dx = p1.x - p2.x;
             var m = dy / dx;
@@ -243,11 +287,13 @@ class Transformation {
                 return (m * x + p1.y - p1.x * m);
             }
 
+            // cehck if dashed
             if (l.type == "dashed") {
                 const ctx = p.drawingContext;
                 p.strokeWeight(3)
                 ctx.setLineDash([20, 20]);
 
+                // draw the line
                 if (dx == 0) {
                     p.line(p1.x, 0, p1.x, p.height);
                 } else {
@@ -256,6 +302,7 @@ class Transformation {
 
                 ctx.setLineDash([10, 0]);
             } else {
+                // draw the line
                 if (dx == 0) {
                     p.line(p1.x, 0, p1.x, p.height);
                 } else {
@@ -266,50 +313,8 @@ class Transformation {
     }
 
     click() {
-        var s = this.canv.snap(this.p.mouseX, this.p.mouseY)
-        var m = this.canv.getInvPos(s.x, s.y);
-
-        if (this.addSol) {
-            if (!this.v1) {
-                this.v1 = {
-                    x: m.x,
-                    y: m.y
-                }
-            } else {
-                this.lines.push({
-                    x1: this.v1.x,
-                    y1: this.v1.y,
-                    x2: m.x,
-                    y2: m.y,
-                    type: "solid"
-                })
-
-                this.addSol = false;
-                this.v1 = undefined;
-                this.update(this.out());
-            }
-        } else if (this.addDash) {
-            if (!this.v1) {
-                this.v1 = {
-                    x: m.x,
-                    y: m.y
-                }
-            } else {
-                this.lines.push({
-                    x1: this.v1.x,
-                    y1: this.v1.y,
-                    x2: m.x,
-                    y2: m.y,
-                    type: "dashed"
-                })
-
-                this.addDash = false;
-                this.v1 = undefined;
-                this.update(this.out());
-            }
-        } else {
-            this.dragPoint = this.hoverPoint;
-        }
+        // set the dragged point to be the same as the hovered point
+        this.dragPoint = this.hoverPoint;
     }
 
     release() {
@@ -317,17 +322,28 @@ class Transformation {
     }
 
     out() {
-        return [JSON.stringify(this.sA.points), JSON.stringify(this.sB.points)];
+        // ouput the points of both shapes
+        return [JSON.stringify(this.sB.points)];
     }
 
     addSolid() {
-        this.addSol = true;
-        this.addDash = false;
+        this.lines.push({
+            x1: this.p.random(this.canv.x_axis.start, this.canv.x_axis.end),
+            y1: this.p.random(this.canv.y_axis.start, this.canv.y_axis.end),
+            x2: this.p.random(this.canv.x_axis.start, this.canv.x_axis.end),
+            y2: this.p.random(this.canv.y_axis.start, this.canv.y_axis.end),
+            type: "solid"
+        })
     }
 
     addDashed() {
-        this.addDash = true;
-        this.addSol = false;
+        this.lines.push({
+            x1: this.p.random(this.canv.x_axis.start, this.canv.x_axis.end),
+            y1: this.p.random(this.canv.y_axis.start, this.canv.y_axis.end),
+            x2: this.p.random(this.canv.x_axis.start, this.canv.x_axis.end),
+            y2: this.p.random(this.canv.y_axis.start, this.canv.y_axis.end),
+            type: "dashed"
+        })
     }
 
     resize() {}
@@ -338,6 +354,10 @@ class Transformation {
 }
 
 class Coordinate_Canvas {
+    // takes in: quadrants to show (full/line/1/2/3/4)
+    // x axis data
+    // y axis data
+    // snap to grid, show grid, aixs numbering (true/false)
     constructor({
         quadrants,
         x_axis = {
@@ -358,6 +378,7 @@ class Coordinate_Canvas {
         snapToGrid,
         axisNumbering
     }, p, update) {
+        // Set all the appropriate values
         this.p = p;
         this.update = update;
 
@@ -391,10 +412,12 @@ class Coordinate_Canvas {
     draw() {
         var p = this.p;
 
+        // set the colors
         p.background(backgroundColor)
         p.stroke(labelTextColor);
         p.strokeWeight(2);
 
+        // determine the positions of the axes onb the type
         var x_axis_pos;
         var y_axis_pos;
         if (this.quadrants == "full") {
@@ -435,21 +458,27 @@ class Coordinate_Canvas {
         // X axis
         if (this.x_axis.show) {
             if (this.quadrants == "line") {
+                // draw x axis line
                 p.line(0, p.height / 2, p.width, p.height / 2);
 
+                // add axis label
                 p.push();
                 p.fill(labelTextColor);
                 p.noStroke();
                 p.textAlign(p.BOTTOM, p.LEFT);
+                p.textSize(20);
                 p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 5, p.height / 2 - 12)
                 p.pop();
             } else {
+                // draw x axis
                 p.line(0, ya, p.width, ya);
+
 
                 p.push();
                 p.fill(labelTextColor);
                 p.noStroke();
                 p.textAlign(p.TOP, p.LEFT);
+                p.textSize(20);
                 p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 3, ya - 12)
                 p.pop();
             }
@@ -457,12 +486,15 @@ class Coordinate_Canvas {
 
         // Y axis
         if (this.y_axis.show) {
+            // draw y axis line
             p.line(xa, 0, xa, p.height);
 
+            // add axis label
             p.push();
             p.fill(labelTextColor);
             p.noStroke();
             p.textAlign(p.BOTTOM, p.LEFT);
+            p.textSize(20);
             p.text(this.y_axis.label, xa + 5, 12)
             p.pop();
         }
@@ -471,14 +503,18 @@ class Coordinate_Canvas {
         p.strokeWeight(1);
         //X lines
         for (var i = this.x_axis.increment * p.floor(this.x_axis.start / this.x_axis.increment); i <= this.x_axis.end; i += this.x_axis.increment) {
+            // draw all the lines perpendicular to x axis
             var x = p.map(i, this.x_axis.start, this.x_axis.end, 0, p.width);
 
+            //draw the line
             if (this.showGrid) {
                 p.line(x, 0, x, p.height);
             }
 
+            // handle axis numbering
             if (this.axisNumbering) {
                 if (this.x_axis.show) {
+                    // calculate rounded value
                     var rounding = this.x_axis.increment.toString().split(".")[1];
                     if (!rounding) rounding = 0;
                     else rounding = rounding.length;
@@ -486,13 +522,16 @@ class Coordinate_Canvas {
                     p.push();
                     p.noStroke();
                     var rounded = Math.round(i * 10 ** rounding) / 10 ** rounding
+                        // not at origin
                     if (rounded != x_axis_pos) {
-                        var b = { x: x - p.textWidth(rounded) / 2, y: ya + 15 - 12, w: p.textWidth(rounded), h: 13 }
+                        // draw the rounded value
+                        p.textSize(20);
+                        var b = { x: x - p.textWidth(rounded) / 2, y: ya + 22 - 12, w: p.textWidth(rounded), h: 13 }
                         p.fill(backgroundColor);
                         p.rect(b.x, b.y, b.w, b.h);
 
                         p.fill(labelTextColor);
-                        p.text(rounded, x - p.textWidth(rounded) / 2, ya + 15);
+                        p.text(rounded, x - p.textWidth(rounded) / 2, ya + 22);
                     } else {
                         /*
                         p.fill(labelTextColor);
@@ -512,14 +551,18 @@ class Coordinate_Canvas {
 
         //Y lines
         for (var i = this.y_axis.increment * p.floor(this.y_axis.start / this.y_axis.increment); i <= this.y_axis.end; i += this.y_axis.increment) {
+            // draw all the lines perpendicular to y axis
             var y = p.map(i, this.y_axis.start, this.y_axis.end, p.height, 0);
 
+            //draw the line
             if (this.showGrid) {
                 p.line(0, y, p.width, y);
             }
 
+            // handle axis numbering
             if (this.axisNumbering) {
                 if (this.y_axis.show) {
+                    // calculate rounded value
                     var rounding = this.y_axis.increment.toString().split(".")[1];
                     if (!rounding) rounding = 0;
                     else rounding = rounding.length;
@@ -528,7 +571,10 @@ class Coordinate_Canvas {
                     p.fill(labelTextColor);
                     p.noStroke();
                     var rounded = Math.round((i) * 10 ** rounding) / 10 ** rounding
+                        // not at origin
                     if (rounded != y_axis_pos) {
+                        // draw the rounded value
+                        p.textSize(20);
                         var b = { x: xa - p.textWidth(rounded) - 6, y: y + 4 - 12, w: p.textWidth(rounded) + 2, h: 13 }
                         p.fill(backgroundColor);
                         p.rect(b.x, b.y, b.w, b.h);
@@ -551,6 +597,7 @@ class Coordinate_Canvas {
             }
         }
 
+        // draw point at the snapped cursor
         var snap = this.snap(p.mouseX, p.mouseY);
         p.strokeWeight(5);
         p.stroke(0)
@@ -560,9 +607,11 @@ class Coordinate_Canvas {
     snap(x, y) {
         var p = this.p;
         if (!this.snapToGrid) {
+            // if jnot snap to grid, return original value
             return { x: x, y: y };
         } else {
             if (this.quadrants == "line") {
+                // handle and calculate the position for line canvas
                 var xa = p.map(this.x_axis_pos, this.x_axis.start, this.x_axis.end, 0, p.width);
                 var xInc = p.map(this.x_axis.increment + this.x_axis.start, this.x_axis.start, this.x_axis.end, 0, p.width);
                 var x_s = Math.round((x - xa) / xInc) * xInc + xa;
@@ -572,6 +621,7 @@ class Coordinate_Canvas {
 
                 return { x: x_s, y: y_s };
             } else {
+                // handle and calculate the position for normal canvas
                 var xa = p.map(0, this.x_axis.start, this.x_axis.end, 0, p.width);
                 var ya = p.map(0, this.y_axis.start, this.y_axis.end, p.height, 0);
 
@@ -587,6 +637,7 @@ class Coordinate_Canvas {
     }
 
     getPos(x, y) {
+        // function for calculating value from coordinate canvas to value on normal canvas
         var y_m = this.p.map(y, this.y_axis.start, this.y_axis.end, this.p.height, 0);
         var x_m = this.p.map(x, this.x_axis.start, this.x_axis.end, 0, this.p.width);
 
@@ -594,6 +645,7 @@ class Coordinate_Canvas {
     }
 
     getInvPos(x, y) {
+        // opposite of getPos()
         var y_m = this.p.map(y, this.p.height, 0, this.y_axis.start, this.y_axis.end);
         var x_m = this.p.map(x, 0, this.p.width, this.x_axis.start, this.x_axis.end);
 
