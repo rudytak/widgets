@@ -1,7 +1,7 @@
 var backgroundColor, labelTextColor;
 const createCummulativeFrequencyDiagram = (() => {
     const node = document.getElementById('widget-container')
-    const hiddenInputs = ["inequalities-lines"]
+    const hiddenInputs = ["plot-output"]
     const heightToWidthRatio = 5 / 8
 
     const updateHiddenInputs = (output) => {
@@ -68,7 +68,8 @@ const createCummulativeFrequencyDiagram = (() => {
         canvasData: canvasData,
         interactive: interactive,
         input_lines: input_lines,
-        input_points: input_points
+        input_points: input_points,
+        input_function: input_functions
     }
 
     // Define the p5 sketch methods
@@ -77,97 +78,119 @@ const createCummulativeFrequencyDiagram = (() => {
             plt = new Plot(creationData, p, updateHiddenInputs);
             window.plt = plt;
 
+            // Rows of buttons
+            var buttonRow1 = document.createElement("div");
+            var buttonRow2 = document.createElement("div");
+            var buttonRow3 = document.createElement("div");
+            node.appendChild(buttonRow1)
+            node.appendChild(buttonRow2)
+            node.appendChild(buttonRow3)
+
+            // add all the buttons if interactive
             if (creationData.interactive) {
                 var clrBtn = document.createElement("button");
                 clrBtn.innerText = "Clear";
                 clrBtn.type = "button";
                 clrBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                clrBtn.style = "margin-bottom: 10px !important;"
                 clrBtn.onclick = () => { plt.clear() };
-                node.appendChild(clrBtn)
+                buttonRow1.appendChild(clrBtn)
 
                 var pointBtn = document.createElement("button");
                 pointBtn.innerText = "●";
                 pointBtn.type = "button";
                 pointBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                pointBtn.style = "margin-bottom: 10px !important;"
                 pointBtn.onclick = () => { plt.addPoint() };
-                node.appendChild(pointBtn)
+                buttonRow1.appendChild(pointBtn)
 
                 var lineBtn = document.createElement("button");
                 lineBtn.innerText = "─";
                 lineBtn.type = "button";
                 lineBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                lineBtn.style = "margin-bottom: 10px !important;"
                 lineBtn.onclick = () => { plt.addLine("solid") };
-                node.appendChild(lineBtn)
+                buttonRow1.appendChild(lineBtn)
 
                 var vectorBtn = document.createElement("button");
                 vectorBtn.innerText = "→";
                 vectorBtn.type = "button";
                 vectorBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                vectorBtn.style = "margin-bottom: 10px !important;"
                 vectorBtn.onclick = () => { plt.addLine("vector") };
-                node.appendChild(vectorBtn)
+                buttonRow1.appendChild(vectorBtn)
 
                 var linearFunctionBtn = document.createElement("button");
-                linearFunctionBtn.innerText = "Linear function";
+                linearFunctionBtn.innerText = "Linear";
                 linearFunctionBtn.type = "button";
                 linearFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                linearFunctionBtn.style = "margin-bottom: 10px !important;"
                 linearFunctionBtn.onclick = () => { plt.addFunction(2) };
-                node.appendChild(linearFunctionBtn)
+                buttonRow2.appendChild(linearFunctionBtn)
 
                 var quadraticFunctionBtn = document.createElement("button");
-                quadraticFunctionBtn.innerText = "Quadratic function";
+                quadraticFunctionBtn.innerText = "Quadratic";
                 quadraticFunctionBtn.type = "button";
                 quadraticFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                quadraticFunctionBtn.style = "margin-bottom: 10px !important;"
                 quadraticFunctionBtn.onclick = () => { plt.addFunction(3) };
-                node.appendChild(quadraticFunctionBtn)
+                buttonRow2.appendChild(quadraticFunctionBtn)
 
                 var cubicFunctionBtn = document.createElement("button");
-                cubicFunctionBtn.innerText = "Cubic function";
+                cubicFunctionBtn.innerText = "Cubic";
                 cubicFunctionBtn.type = "button";
                 cubicFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                cubicFunctionBtn.style = "margin-bottom: 10px !important;"
                 cubicFunctionBtn.onclick = () => { plt.addFunction(4) };
-                node.appendChild(cubicFunctionBtn)
+                buttonRow2.appendChild(cubicFunctionBtn)
 
                 var sinFunctionBtn = document.createElement("button");
-                sinFunctionBtn.innerText = "Sinusodial function";
+                sinFunctionBtn.innerText = "Sinusodial";
                 sinFunctionBtn.type = "button";
                 sinFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                sinFunctionBtn.style = "margin-bottom: 10px !important;"
                 sinFunctionBtn.onclick = () => { plt.addSin() };
-                node.appendChild(sinFunctionBtn)
+                buttonRow2.appendChild(sinFunctionBtn)
 
                 var tanFunctionBtn = document.createElement("button");
-                tanFunctionBtn.innerText = "Tangentodial function";
+                tanFunctionBtn.innerText = "Tangentodial";
                 tanFunctionBtn.type = "button";
                 tanFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                tanFunctionBtn.style = "margin-bottom: 10px !important;"
                 tanFunctionBtn.onclick = () => { plt.addTan() };
-                node.appendChild(tanFunctionBtn)
+                buttonRow2.appendChild(tanFunctionBtn)
 
                 var expFunctionBtn = document.createElement("button");
-                expFunctionBtn.innerText = "Exponential function";
+                expFunctionBtn.innerText = "Exponential";
                 expFunctionBtn.type = "button";
                 expFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                expFunctionBtn.style = "margin-bottom: 10px !important;"
                 expFunctionBtn.onclick = () => { plt.addExp() };
-                node.appendChild(expFunctionBtn)
+                buttonRow2.appendChild(expFunctionBtn)
 
                 var recipFunctionBtn = document.createElement("button");
-                recipFunctionBtn.innerText = "Reciprocal function";
+                recipFunctionBtn.innerText = "Reciprocal";
                 recipFunctionBtn.type = "button";
                 recipFunctionBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                recipFunctionBtn.style = "margin-bottom: 10px !important;"
                 recipFunctionBtn.onclick = () => { plt.addReci() };
-                node.appendChild(recipFunctionBtn)
+                buttonRow2.appendChild(recipFunctionBtn)
 
                 var tangentBtn = document.createElement("button");
                 tangentBtn.innerText = "Tangent";
                 tangentBtn.type = "button";
                 tangentBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                tangentBtn.style = "margin-bottom: 10px !important;"
                 tangentBtn.onclick = () => { plt.addTangent() };
-                node.appendChild(tangentBtn)
+                buttonRow3.appendChild(tangentBtn)
 
                 var nrmlBtn = document.createElement("button");
                 nrmlBtn.innerText = "Normal";
                 nrmlBtn.type = "button";
                 nrmlBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
+                nrmlBtn.style = "margin-bottom: 10px !important;"
                 nrmlBtn.onclick = () => { plt.addNormal() };
-                node.appendChild(nrmlBtn)
+                buttonRow3.appendChild(nrmlBtn)
             }
 
             var c = p.createCanvas(dims.w, dims.h)
@@ -180,6 +203,7 @@ const createCummulativeFrequencyDiagram = (() => {
             })
 
             c.elt.style["margin-top"] = "10px";
+            p.cursor(p.HAND);
         }
 
         p.draw = () => {
@@ -210,11 +234,14 @@ class Plot {
         canvasData,
         interactive,
         input_lines,
-        input_points
+        input_points,
+        input_function
     }, p, update) {
+        // load in the inputs
         this.p = p;
         this.update = update;
 
+        // create canvas
         this.canv = new Coordinate_Canvas(canvasData, p, () => {});
 
         this.hoverPoint = null;
@@ -234,20 +261,26 @@ class Plot {
         this.tangent = undefined;
         this.normal = undefined;
 
-        this.functions = [];
+        this.functions = input_function;
+
+        this.update(this.out());
     }
 
     draw() {
         //this.tangent = undefined;
         var p = this.p;
+        // Draw canvas
         this.canv.draw();
 
+        // Reset hover point
         this.hoverPoint = null;
 
+        //handle dragging
         var s = this.canv.snap(p.mouseX, p.mouseY)
         var mouse = this.canv.getInvPos(s.x, s.y);
         if (this.dragPoint != null) {
             if (this.interactive) {
+                // dragging pointr on a line
                 if (this.dragPoint == 1) {
                     this.dragLine.x1 = mouse.x;
                     this.dragLine.y1 = mouse.y;
@@ -255,6 +288,7 @@ class Plot {
                     this.dragLine.x2 = mouse.x;
                     this.dragLine.y2 = mouse.y;
                 } else {
+                    // dragging an actual point
                     this.dragPoint.x = mouse.x;
                     this.dragPoint.y = mouse.y;
                 }
@@ -262,9 +296,11 @@ class Plot {
             }
         }
 
+        //create copy of functions
         var func = [...this.functions];
         var tanDist = 5;
         var normDist = 5;
+        // add a function if we have tangent or the normal
         if (this.adding_tangent) {
             if (this.tangent) {
                 func.unshift(this.tangent)
@@ -278,145 +314,185 @@ class Plot {
         //DRAW FUNCTIONS
         for (var f of func) {
             try {
-                var coef;
-                switch (f.type) {
-                    case "sin":
-                        coef = fitSin(f.points);
-                        break;
-                    case "tan":
-                        coef = fitTan(f.points);
-                        break;
-                    case "exp":
-                        coef = fitExp(f.points);
-                        break;
-                    case "reci":
-                        coef = fitReci(f.points);
-                        break;
-                    case "polynomial":
-                        coef = fitPoints(f.points);
-                        break;
-                }
+                if (f.type == "polynomial" && f.points.length == 2 && f.points[0].x == f.points[1].x) {
+                    // draw a verical line if the dx is 0
+                    p.strokeWeight(2);
+                    p.noFill();
 
-                p.strokeWeight(2);
-                p.noFill();
-                p.beginShape(p.LINE);
-                var lastVal;
-                var beg = true;
-                var value = 0;
-                for (var i = this.canv.x_axis.start - 0.05 * this.canv.x_axis.increment; i < this.canv.x_axis.end; i += this.canv.x_axis.increment / 25) {
-                    lastVal = value;
-                    value = 0;
-
+                    var x_val = this.canv.getPos(f.points[0].x, 0).x;
+                    p.line(x_val, 0, x_val, p.height)
+                } else {
+                    var coef;
+                    // get fuction coefficients from type
                     switch (f.type) {
                         case "sin":
-                            value = coef[0] * Math.sin(coef[1] * (i + coef[2])) + coef[3];
+                            coef = fitSin(f.points);
                             break;
                         case "tan":
-                            value = coef[0] * Math.tan(coef[1] * (i + coef[2])) + coef[3];
+                            coef = fitTan(f.points);
                             break;
                         case "exp":
-                            value = coef[0] ** (i + coef[1]);
+                            coef = fitExp(f.points);
                             break;
                         case "reci":
-                            value = coef[0] / (i + coef[1]) + coef[2];
+                            coef = fitReci(f.points);
                             break;
                         case "polynomial":
-                            for (var c = 0; c < coef.length; c++) {
-                                value += coef[c] * i ** c;
-                            }
+                            coef = fitPoints(f.points);
                             break;
                     }
 
-                    var pos = this.canv.getPos(i, value);
-                    if (Math.abs(lastVal - value) > p.height / 10 && (f.type == "tan" || f.type == "reci")) {
-                        beg = false;
-                        p.endShape();
-                    } else {
-                        if (!beg) {
-                            p.beginShape(p.LINE);
-                            beg = true;
+                    // Prepare
+                    p.strokeWeight(2);
+                    p.noFill();
+                    p.beginShape(p.LINE);
+                    var lastVal;
+                    var beg = true;
+                    var value = 0;
+                    // loop through many points and draw the function
+                    for (var i = this.canv.x_axis.start - 0.05 * this.canv.x_axis.increment; i < this.canv.x_axis.end; i += this.canv.x_axis.increment / 25) {
+                        // push the last value
+                        lastVal = value;
+                        value = 0;
+
+                        // interpret the coefficients and calculate the values
+                        switch (f.type) {
+                            case "sin":
+                                value = coef[0] * Math.sin(coef[1] * (i + coef[2])) + coef[3];
+                                break;
+                            case "tan":
+                                value = coef[0] * Math.tan(coef[1] * (i + coef[2])) + coef[3];
+                                break;
+                            case "exp":
+                                value = coef[0] ** (i + coef[1]);
+                                break;
+                            case "reci":
+                                value = coef[0] / (i + coef[1]) + coef[2];
+                                break;
+                            case "polynomial":
+                                for (var c = 0; c < coef.length; c++) {
+                                    value += coef[c] * i ** c;
+                                }
+                                break;
                         }
-                        p.vertex(pos.x, pos.y);
 
-                        if (this.adding_tangent && p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < tanDist) {
-                            tanDist = p.dist(pos.x, pos.y, p.mouseX, p.mouseY);
 
-                            if (!this.tangent ||
-                                !(this.tangent.points[0].x == f.points[0].x &&
-                                    this.tangent.points[0].y == f.points[0].y &&
-                                    this.tangent.points[1].x == f.points[1].x &&
-                                    this.tangent.points[1].y == f.points[1].y)) {
-                                var dx = this.canv.x_axis.increment / 25;
-                                var dy = value - lastVal
-                                this.tangent = {
-                                    points: [{
-                                        x: i - this.canv.x_axis.increment / 25,
-                                        y: lastVal
-                                    }, {
-                                        x: i - this.canv.x_axis.increment / 25 + dx,
-                                        y: lastVal + dy
-                                    }],
-                                    type: "polynomial"
+                        var pos = this.canv.getPos(i, value);
+                        // if function if reci or tan and the derivative is extremely high
+                        if (Math.abs(lastVal - value) > p.height / 10 && (f.type == "tan" || f.type == "reci")) {
+                            // end shape and start it again later
+                            beg = false;
+                            p.endShape();
+                        } else {
+                            // start the shape if it ended
+                            if (!beg) {
+                                p.beginShape(p.LINE);
+                                beg = true;
+                            }
+                            // add the vertex for the shape
+                            p.vertex(pos.x, pos.y);
+
+                            //if we are adding a tangent and we are close
+                            if (this.adding_tangent && p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < tanDist) {
+                                tanDist = p.dist(pos.x, pos.y, p.mouseX, p.mouseY);
+
+                                if (!this.tangent ||
+                                    !(this.tangent.points[0].x == f.points[0].x && // make sure that the tangent isnt snapping to itself
+                                        this.tangent.points[0].y == f.points[0].y &&
+                                        this.tangent.points[1].x == f.points[1].x &&
+                                        this.tangent.points[1].y == f.points[1].y)) {
+
+                                    // calculate the derivative at that point
+                                    var dx = this.canv.x_axis.increment / 25;
+                                    var dy = value - lastVal
+                                        // create the tangent function
+                                    this.tangent = {
+                                        points: [{
+                                            x: i - this.canv.x_axis.increment / 25,
+                                            y: lastVal
+                                        }, {
+                                            x: i - this.canv.x_axis.increment / 25 + dx,
+                                            y: lastVal + dy
+                                        }],
+                                        type: "polynomial"
+                                    }
                                 }
                             }
-                        } else if (this.adding_normal && p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < normDist) {
-                            if (!this.normal ||
-                                !(this.normal.points[0].x == f.points[0].x &&
-                                    this.normal.points[0].y == f.points[0].y &&
-                                    this.normal.points[1].x == f.points[1].x &&
-                                    this.normal.points[1].y == f.points[1].y)) {
+                            //if we are adding a normla and we are close
+                            else if (this.adding_normal && p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < normDist) {
+                                if (!this.normal ||
+                                    !(this.normal.points[0].x == f.points[0].x && // make sure that the normal isnt snapping to itself
+                                        this.normal.points[0].y == f.points[0].y &&
+                                        this.normal.points[1].x == f.points[1].x &&
+                                        this.normal.points[1].y == f.points[1].y)) {
 
-                                normDist = p.dist(pos.x, pos.y, p.mouseX, p.mouseY);
+                                    normDist = p.dist(pos.x, pos.y, p.mouseX, p.mouseY);
 
-                                var dx = this.canv.x_axis.increment / 25;
-                                var dy = value - lastVal
+                                    // calculate the derivative at that point
+                                    var dx = this.canv.x_axis.increment / 25;
+                                    var dy = value - lastVal
 
-                                this.normal = {
-                                    points: [{
-                                        x: i - this.canv.x_axis.increment / 25,
-                                        y: lastVal
-                                    }, {
-                                        x: i - this.canv.x_axis.increment / 25 + dy,
-                                        y: lastVal - dx
-                                    }],
-                                    type: "polynomial"
+                                    // create the normal function
+                                    this.normal = {
+                                        points: [{
+                                            x: i - this.canv.x_axis.increment / 25,
+                                            y: lastVal
+                                        }, {
+                                            x: i - this.canv.x_axis.increment / 25 + dy,
+                                            y: lastVal - dx
+                                        }],
+                                        type: "polynomial"
+                                    }
                                 }
                             }
                         }
                     }
+                    p.endShape();
                 }
-
-                p.endShape();
             } catch (e) {
-                //if (p.frameCount % 100 == 0) console.log(e)
+                try {
+                    //if (p.frameCount % 100 == 0) console.log(e)
 
-                p.push();
-                p.strokeWeight(2);
-                p.stroke(255, 0, 0);
-                p.noFill();
-                p.beginShape(p.LINE);
-                for (var poi of f.points) {
-                    var pos = this.canv.getPos(poi.x, poi.y);
-                    p.vertex(pos.x, pos.y);
+                    // if there is a problem, just draw a shape connecting the points withou calcualting the coefficitients
+                    p.push();
+                    p.strokeWeight(2);
+                    p.stroke(255, 0, 0);
+                    p.noFill();
+                    p.beginShape(p.LINE);
+                    // loop through all points
+                    for (var poi of f.points) {
+                        var pos = this.canv.getPos(poi.x, poi.y);
+                        p.vertex(pos.x, pos.y);
+                    }
+                    p.endShape();
+                    p.pop();
+                } catch (error) {
+                    this.adding_tangent = false;
+                    this.adding_normal = false;
                 }
-                p.endShape();
-                p.pop();
             }
 
-            if (this.interactive) {
-                for (var poi of f.points) {
-                    p.push();
-                    var pos = this.canv.getPos(poi.x, poi.y);
+            try {
+                if (this.interactive) {
+                    // draw all the function point if interactive
+                    for (var poi of f.points) {
+                        p.push();
+                        var pos = this.canv.getPos(poi.x, poi.y);
 
-                    p.stroke(201, 45, 24)
-                    p.strokeWeight(10);
-                    if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
-                        this.hoverPoint = f.points[f.points.indexOf(poi)];
-                        p.strokeWeight(15);
+                        p.stroke(201, 45, 24)
+                        p.strokeWeight(10);
+                        // check for hover
+                        if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
+                            this.hoverPoint = f.points[f.points.indexOf(poi)];
+                            p.strokeWeight(15);
+                        }
+                        p.point(pos.x, pos.y);
+                        p.pop();
                     }
-                    p.point(pos.x, pos.y);
-                    p.pop();
                 }
+            } catch (error) {
+                this.adding_tangent = false;
+                this.adding_normal = false;
             }
         }
 
@@ -425,6 +501,7 @@ class Plot {
         p.fill(255, 0, 0, 64);
         p.strokeWeight(2);
         var lin = this.lines;
+        /*
         if (this.v1) {
             lin = this.lines.concat([{
                 x1: this.v1.x,
@@ -433,55 +510,66 @@ class Plot {
                 y2: mouse.y,
                 type: this.line_type
             }])
-        }
+        }*/
+
+        // loop through all the points
         for (var l of lin) {
+            // point positions
             var p1 = this.canv.getPos(l.x1, l.y1)
             var p2 = this.canv.getPos(l.x2, l.y2)
 
             p.push();
             p.stroke(201, 45, 24)
             p.strokeWeight(10);
+            // check hover of fisrt point
             if (p.dist(p1.x, p1.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = l;
                 this.hoverPoint = 1;
                 p.strokeWeight(15);
             }
-            p.point(p1.x, p1.y);
+            if (this.interactive) p.point(p1.x, p1.y);
             p.pop();
 
             p.push();
             p.stroke(201, 45, 24)
             p.strokeWeight(10);
+            // check hover of second point
             if (p.dist(p2.x, p2.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = l;
                 this.hoverPoint = 2;
                 p.strokeWeight(15);
             }
-            p.point(p2.x, p2.y);
+            if (this.interactive) p.point(p2.x, p2.y);
             p.pop();
 
             if (l.type == "dashed") {
+                //get context
                 const ctx = p.drawingContext;
                 p.strokeWeight(3)
+                    // set dashing on line
                 ctx.setLineDash([20, 20]);
 
                 p.line(p1.x, p1.y, p2.x, p2.y);
 
                 ctx.setLineDash([10, 0]);
             } else if (l.type == "vector") {
+                // draw an arrow for vectors
                 this.drawArrow(p.createVector(p1.x, p1.y), p.createVector(p2.x - p1.x, p2.y - p1.y), labelTextColor)
             } else {
+                // els, draw normal line
                 p.line(p1.x, p1.y, p2.x, p2.y);
             }
         }
 
         //DRAW POINTS
         p.stroke(labelTextColor);
+        // loop through all the points
         for (var poi of this.points) {
             p.push();
             p.stroke(201, 45, 24)
             p.strokeWeight(10);
             var pos = this.canv.getPos(poi.x, poi.y);
+            // check for hover
             if (p.dist(pos.x, pos.y, p.mouseX, p.mouseY) < 10 && this.hoverPoint == null && this.interactive) {
                 this.hoverLine = null;
                 this.hoverPoint = poi;
@@ -493,20 +581,27 @@ class Plot {
     }
 
     click() {
-        if (this.adding_tangent) {
-            this.adding_tangent = false;
-            this.functions.push(this.tangent)
-            return;
-        }
-        if (this.adding_normal) {
-            this.adding_normal = false;
-            this.functions.push(this.normal)
-            return;
+        if (this.functions.length > 0) {
+            // push the tangent if we are adding one
+            if (this.adding_tangent) {
+                this.adding_tangent = false;
+                if (this.tangent) this.functions.push(this.tangent)
+                this.update(this.out());
+                return;
+            }
+            // push the normal if we are adding one
+            if (this.adding_normal) {
+                this.adding_normal = false;
+                if (this.normal) this.functions.push(this.normal)
+                this.update(this.out());
+                return;
+            }
         }
 
         var s = this.canv.snap(this.p.mouseX, this.p.mouseY)
         var m = this.canv.getInvPos(s.x, s.y);
 
+        /*
         if (this.addLn) {
             if (!this.v1) {
                 this.v1 = {
@@ -526,16 +621,19 @@ class Plot {
                 this.v1 = undefined;
                 this.update(this.out());
             }
-        } else if (this.addPnt) {
+        }
+        // if we are adding a point
+        else*/
+        if (this.addPnt) {
+            //push the point
             this.points.push(m)
 
             this.addPnt = false;
             this.update(this.out());
         } else {
+            // set the dragged objects
             this.dragLine = this.hoverLine;
             this.dragPoint = this.hoverPoint;
-
-            console.log(this.dragPoint)
         }
     }
 
@@ -544,9 +642,69 @@ class Plot {
     }
 
     out() {
-        return [JSON.stringify(this.lines)];
+        // export
+        return (
+            JSON.stringify({
+                points: this.points.map(x => {
+                    x.x = Math.round(x.x * 1e6) / 1e6;
+                    x.y = Math.round(x.y * 1e6) / 1e6;
+                    return x
+                }),
+                lines: this.lines.map(x => {
+                    x.x1 = Math.round(x.x1 * 1e6) / 1e6;
+                    x.y1 = Math.round(x.y1 * 1e6) / 1e6;
+                    x.x2 = Math.round(x.x2 * 1e6) / 1e6;
+                    x.y2 = Math.round(x.y2 * 1e6) / 1e6;
+                    return x
+                }),
+                functions: this.functions.map(f => {
+                    try {
+                        var coef;
+                        var retVal = "";
+                        // get fuction coefficients from type
+                        switch (f.type) {
+                            case "sin":
+                                coef = fitSin(f.points);
+                                retVal = `${Math.round(coef[0] * 1e6) / 1e6}\\sin(${Math.round(coef[1] * 1e6) / 1e6}(x+${Math.round(coef[2] * 1e6) / 1e6}))+${Math.round(coef[3] * 1e6) / 1e6}`
+                                break;
+                            case "tan":
+                                coef = fitTan(f.points);
+                                retVal = `${Math.round(coef[0] * 1e6) / 1e6}\\tan(${Math.round(coef[1] * 1e6) / 1e6}(x+${Math.round(coef[2] * 1e6) / 1e6}))+${Math.round(coef[3] * 1e6) / 1e6}`
+                                break;
+                            case "exp":
+                                coef = fitExp(f.points);
+                                retVal = `${Math.round(coef[0] * 1e6) / 1e6}^{x-${Math.round(coef[1] * 1e6) / 1e6}}`
+                                break;
+                            case "reci":
+                                coef = fitReci(f.points);
+                                retVal = `\\frac{${Math.round(coef[0] * 1e6) / 1e6}}{x+${Math.round(coef[1] * 1e6) / 1e6}} + ${Math.round(coef[2] * 1e6) / 1e6}`
+                                break;
+                            case "polynomial":
+                                if (f.points.length == 2 && f.points[0].x == f.points[1].x) {
+                                    retVal = `x=${Math.round(f.points[0].x * 1e6) / 1e6}`;
+                                } else {
+                                    coef = fitPoints(f.points);
+                                    //coef.reverse();
+                                    var maxPow = coef.length;
+                                    for (var i = 1; i < maxPow; i++) {
+                                        retVal += `${Math.round(coef[maxPow-i] * 1e6) / 1e6}x^{${maxPow-i}}+`
+                                    }
+                                    retVal += `${Math.round(coef[0] * 1e6) / 1e6}`
+                                }
+                                break;
+                        }
+
+                        return retVal.replaceAll("--", "+").replaceAll("+-", "-");
+                    } catch (error) {
+                        return "Invalid function";
+                    }
+
+                    return "Invalid function";
+                })
+            }))
     }
 
+    // functions for adding normals and tangents
     addTangent() {
         this.adding_tangent = true;
         this.adding_normal = false;
@@ -558,12 +716,24 @@ class Plot {
     }
 
     addLine(lineType) {
-        this.addLn = true;
-        this.line_type = lineType;
+        // add a line randomly
+        this.lines.push({
+            x1: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+            y1: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end)),
+            x2: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+            y2: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end)),
+            type: lineType
+        })
+        this.update(this.out());
     }
 
+    // functions for adding differnet functions
     addPoint() {
-        this.addPnt = true;
+        this.points.push({
+            x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+            y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
+        })
+        this.update(this.out());
     }
 
     addFunction(points) {
@@ -571,8 +741,8 @@ class Plot {
 
         for (var i = 0; i < points; i++) {
             pnt.push({
-                x: i,
-                y: i ** i / 5
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
             })
         }
 
@@ -580,34 +750,60 @@ class Plot {
             points: pnt,
             type: "polynomial"
         })
+        this.update(this.out());
     }
 
     addSin() {
         this.functions.push({
-            points: [{ x: 0, y: 0 }, { x: 1, y: 1 }],
+            points: [{
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
+            }, {
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
+            }],
             type: "sin"
         })
+        this.update(this.out());
     }
 
     addTan() {
         this.functions.push({
-            points: [{ x: -1, y: -1 }, { x: 1, y: 1 }],
+            points: [{
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
+            }, {
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
+            }],
             type: "tan"
         })
+        this.update(this.out());
     }
 
     addExp() {
         this.functions.push({
-            points: [{ x: 2, y: 2 }],
+            points: [{
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(0, Math.floor(this.canv.y_axis.end))
+            }],
             type: "exp"
         })
+        this.update(this.out());
     }
 
     addReci() {
         this.functions.push({
-            points: [{ x: -1, y: -1 }, { x: 1, y: 1 }],
+            points: [{
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
+            }, {
+                x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+                y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end))
+            }],
             type: "reci"
         })
+        this.update(this.out());
     }
 
     resize() {}
@@ -616,8 +812,10 @@ class Plot {
         this.points = [];
         this.lines = [];
         this.functions = [];
+        this.update(this.out());
     }
 
+    // https://p5js.org/reference/#/p5.Vector/magSq
     drawArrow(base, vec, myColor) {
         var p = this.p;
 
@@ -731,272 +929,4 @@ function fitPoints(pnts) {
     coefficients = math.multiply(X_inv, Y);
 
     return (coefficients._data.map(x => x[0]));
-}
-
-class Coordinate_Canvas {
-    constructor({
-        quadrants,
-        x_axis = {
-            start,
-            end,
-            increment,
-            show,
-            label
-        },
-        y_axis = {
-            start,
-            end,
-            increment,
-            show,
-            label
-        },
-        showGrid,
-        snapToGrid,
-        axisNumbering
-    }, p, update) {
-        this.p = p;
-        this.update = update;
-
-        this.x_axis = x_axis;
-        this.x_axis.start -= this.x_axis.increment / 2;
-        this.x_axis.end += this.x_axis.increment / 2;
-
-        this.y_axis = y_axis;
-        this.y_axis.start -= this.y_axis.increment / 2;
-        this.y_axis.end += this.y_axis.increment / 2;
-
-        this.quadrants = quadrants;
-        this.showGrid = showGrid;
-        this.snapToGrid = snapToGrid;
-        this.axisNumbering = axisNumbering;
-
-        /*
-        for (var val = 0; val < this.values.length; val++) {
-            const regex = /\\frac\{(.*)\}\{(.*)\}/;
-            var mach = values[val].match(regex);
-            if (mach != null) {
-                this.values[val] = {
-                    type: "fraction",
-                    numerator: mach[1],
-                    denominator: mach[2]
-                }
-            }
-        }*/
-    }
-
-    draw() {
-        var p = this.p;
-
-        p.background(backgroundColor)
-        p.stroke(labelTextColor);
-        p.strokeWeight(2);
-
-        var x_axis_pos;
-        var y_axis_pos;
-        if (this.quadrants == "full") {
-            x_axis_pos = 0;
-            y_axis_pos = 0;
-        }
-        /*else if (this.quadrants == 1) {
-                   x_axis_pos = this.x_axis.start;
-                   y_axis_pos = this.y_axis.start;
-               } else if (this.quadrants == 2) {
-                   x_axis_pos = this.x_axis.end;
-                   y_axis_pos = this.y_axis.start;
-               } else if (this.quadrants == 3) {
-                   x_axis_pos = this.x_axis.end;
-                   y_axis_pos = this.y_axis.end;
-               } else if (this.quadrants == 4) {
-                   x_axis_pos = this.x_axis.start;
-                   y_axis_pos = this.y_axis.end;
-               } */
-        else if (this.quadrants == "line") {
-            this.x_axis.show = true;
-
-            this.y_axis.show = false;
-            this.showGrid = false;
-
-            x_axis_pos = 0;
-            y_axis_pos = (this.y_axis.start + this.y_axis.end) / 2;
-        } else {
-            x_axis_pos = 0;
-            y_axis_pos = 0;
-        }
-        this.x_axis_pos = x_axis_pos;
-        this.y_axis_pos = y_axis_pos;
-
-        var ya = p.map(y_axis_pos, this.y_axis.start, this.y_axis.end, p.height, 0);
-        var xa = p.map(x_axis_pos, this.x_axis.start, this.x_axis.end, 0, p.width);
-
-        // X axis
-        if (this.x_axis.show) {
-            if (this.quadrants == "line") {
-                p.line(0, p.height / 2, p.width, p.height / 2);
-
-                p.push();
-                p.fill(labelTextColor);
-                p.noStroke();
-                p.textAlign(p.BOTTOM, p.LEFT);
-                p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 5, p.height / 2 - 12)
-                p.pop();
-            } else {
-                p.line(0, ya, p.width, ya);
-
-                p.push();
-                p.fill(labelTextColor);
-                p.noStroke();
-                p.textAlign(p.TOP, p.LEFT);
-                p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 3, ya - 12)
-                p.pop();
-            }
-        }
-
-        // Y axis
-        if (this.y_axis.show) {
-            p.line(xa, 0, xa, p.height);
-
-            p.push();
-            p.fill(labelTextColor);
-            p.noStroke();
-            p.textAlign(p.BOTTOM, p.LEFT);
-            p.text(this.y_axis.label, xa + 5, 12)
-            p.pop();
-        }
-
-        p.stroke(labelTextColor + "30");
-        p.strokeWeight(1);
-        //X lines
-        for (var i = this.x_axis.increment * p.floor(this.x_axis.start / this.x_axis.increment); i <= this.x_axis.end; i += this.x_axis.increment) {
-            var x = p.map(i, this.x_axis.start, this.x_axis.end, 0, p.width);
-
-            if (this.showGrid) {
-                p.line(x, 0, x, p.height);
-            }
-
-            if (this.axisNumbering) {
-                if (this.x_axis.show) {
-                    var rounding = this.x_axis.increment.toString().split(".")[1];
-                    if (!rounding) rounding = 0;
-                    else rounding = rounding.length;
-
-                    p.push();
-                    p.noStroke();
-                    var rounded = Math.round(i * 10 ** rounding) / 10 ** rounding
-                    if (rounded != x_axis_pos) {
-                        var b = { x: x - p.textWidth(rounded) / 2, y: ya + 15 - 12, w: p.textWidth(rounded), h: 13 }
-                        p.fill(backgroundColor);
-                        p.rect(b.x, b.y, b.w, b.h);
-
-                        p.fill(labelTextColor);
-                        p.text(rounded, x - p.textWidth(rounded) / 2, ya + 15);
-                    } else {
-                        /*
-                        p.fill(labelTextColor);
-                        p.text(rounded, x + 3, ya + 15);*/
-                    }
-                    p.pop();
-                }
-            }
-
-            if (this.x_axis.show) {
-                p.push();
-                p.stroke(labelTextColor)
-                p.line(x, ya - 2, x, ya + 2);
-                p.pop();
-            }
-        }
-
-        //Y lines
-        for (var i = this.y_axis.increment * p.floor(this.y_axis.start / this.y_axis.increment); i <= this.y_axis.end; i += this.y_axis.increment) {
-            var y = p.map(i, this.y_axis.start, this.y_axis.end, p.height, 0);
-
-            if (this.showGrid) {
-                p.line(0, y, p.width, y);
-            }
-
-            if (this.axisNumbering) {
-                if (this.y_axis.show) {
-                    var rounding = this.y_axis.increment.toString().split(".")[1];
-                    if (!rounding) rounding = 0;
-                    else rounding = rounding.length;
-
-                    p.push();
-                    p.fill(labelTextColor);
-                    p.noStroke();
-                    var rounded = Math.round((i) * 10 ** rounding) / 10 ** rounding
-                    if (rounded != y_axis_pos) {
-                        var b = { x: xa - p.textWidth(rounded) - 6, y: y + 4 - 12, w: p.textWidth(rounded) + 2, h: 13 }
-                        p.fill(backgroundColor);
-                        p.rect(b.x, b.y, b.w, b.h);
-
-                        p.fill(labelTextColor);
-                        p.text(rounded, xa - p.textWidth(rounded) - 5, y + 4);
-                    } else {
-                        /*
-                        p.text(rounded, xa - p.textWidth(rounded) - 5, y - 4);*/
-                    }
-                    p.pop();
-                }
-            }
-
-            if (this.y_axis.show) {
-                p.push();
-                p.stroke(labelTextColor);
-                p.line(xa - 2, y, xa + 2, y);
-                p.pop();
-            }
-        }
-
-        var snap = this.snap(p.mouseX, p.mouseY);
-        p.strokeWeight(5);
-        p.stroke(0)
-        p.point(snap.x, snap.y)
-    }
-
-    snap(x, y) {
-        var p = this.p;
-        if (!this.snapToGrid) {
-            return { x: x, y: y };
-        } else {
-            if (this.quadrants == "line") {
-                var xa = p.map(this.x_axis_pos, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var xInc = p.map(this.x_axis.increment + this.x_axis.start, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var x_s = Math.round((x - xa) / xInc) * xInc + xa;
-
-                var y_axis_pos = (this.y_axis.start + this.y_axis.end) / 2;
-                var y_s = p.map(y_axis_pos, this.y_axis.start, this.y_axis.end, p.height, 0);
-
-                return { x: x_s, y: y_s };
-            } else {
-                var xa = p.map(0, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var ya = p.map(0, this.y_axis.start, this.y_axis.end, p.height, 0);
-
-                var xInc = p.map(this.x_axis.increment + this.x_axis.start, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var yInc = p.map(this.y_axis.increment + this.y_axis.start, this.y_axis.start, this.y_axis.end, 0, p.height);
-
-                var x_s = p.round((x - xa) / xInc) * xInc + xa;
-                var y_s = p.round((y - ya) / yInc) * yInc + ya;
-
-                return { x: x_s, y: y_s };
-            }
-        }
-    }
-
-    getPos(x, y) {
-        var y_m = this.p.map(y, this.y_axis.start, this.y_axis.end, this.p.height, 0);
-        var x_m = this.p.map(x, this.x_axis.start, this.x_axis.end, 0, this.p.width);
-
-        return ({ x: x_m, y: y_m });
-    }
-
-    getInvPos(x, y) {
-        var y_m = this.p.map(y, this.p.height, 0, this.y_axis.start, this.y_axis.end);
-        var x_m = this.p.map(x, 0, this.p.width, this.x_axis.start, this.x_axis.end);
-
-        return ({ x: x_m, y: y_m });
-    }
-
-    click() {}
-
-    resize() {}
 }
