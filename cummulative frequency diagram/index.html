@@ -1,64 +1,71 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <script src="p5.js"></script>
     <script src="p5.sound.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8">
 
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="widget-container" style="cursor: pointer;">
-      <input id="cummulative-frequency-diagram-points" type="hidden" autocomplete="off">
+        <input id="cummulative-frequency-diagram-points" name="answers[]" type="hidden" autocomplete="off">
     </div>
     <script>
-      // START - VALUES FROM BACKEND //
-      // segments: 2 to 5 (values >= 10 degrees)
-      var canvasData = {
-        quadrants: 1,
-        x_axis: {
-          start: 5,
-          end: 100,
-          increment: 10,
-          show: true,
-          label: "X"
-        },
-        y_axis: {
-          start: -5,
-          end: 100,
-          increment: 20,
-          show: true,
-          label: "Y"
-        },
-        showGrid: true,
-        snapToGrid: true,
-        axisNumbering: true
-      }
-      var pnts = [{
-        x: 10,
-        y: 0
-      }, {
-        x: 25,
-        y: 8
-      }, {
-        x: 40,
-        y: 28
-      }, {
-        x: 65,
-        y: 60
-      }, {
-        x: 80,
-        y: 74
-      }, {
-        x: 95,
-        y: 80
-      }]
-      var interactive = true;
-              
-      // colors: color palette used by the pie chart 
-      // (if this is not provided globally it will still work)
-      // const pieColors = ["#00ACED", "#F26363", "#69B516", "#FF8F41", "#A659FF"]
-      // END - VALUES FROM BACKEND //
-    </script>
-    <script src="sketch.js"></script>
-  
+        // START - VALUES FROM BACKEND //
+        // segments: 2 to 5 (values >= 10 degrees)
+        var canvasData = {
+            quadrants: 1,
+            x_axis: {
+                start: 5,
+                end: 100,
+                increment: 10,
+                show: true,
+                label: "X"
+            },
+            y_axis: {
+                start: -5,
+                end: 100,
+                increment: 20,
+                show: true,
+                label: "Y"
+            },
+            showGrid: true,
+            snapToGrid: true,
+            axisNumbering: true
+        }
+        var pnts = [{
+            x: 10,
+            y: 0
+        }, {
+            x: 25,
+            y: 8
+        }, {
+            x: 40,
+            y: 28
+        }, {
+            x: 65,
+            y: 60
+        }, {
+            x: 80,
+            y: 74
+        }, {
+            x: 95,
+            y: 80
+        }]
+        var interactive = true;
 
-</body></html>
+        // colors: color palette used by the pie chart 
+        // (if this is not provided globally it will still work)
+        // const pieColors = ["#00ACED", "#F26363", "#69B516", "#FF8F41", "#A659FF"]
+        // END - VALUES FROM BACKEND //
+    </script>
+    <script src="canvas.js"></script>
+    <script src="sketch.js"></script>
+
+
+</body>
+
+</html>
