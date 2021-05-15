@@ -74,6 +74,7 @@ const createCummulativeFrequencyDiagram = (() => {
     const sketch = p => {
         p.setup = () => {
             ineq = new Inequalities(creationData, p, updateHiddenInputs)
+            window.ineq = ineq;
 
             if (creationData.interactive) {
                 var solidBtn = document.createElement("button");
@@ -84,31 +85,17 @@ const createCummulativeFrequencyDiagram = (() => {
                 node.appendChild(solidBtn)
 
                 var solidBtn = document.createElement("button");
-                solidBtn.innerText = "─ ↑";
+                solidBtn.innerText = "Solid line";
                 solidBtn.type = "button";
                 solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-                solidBtn.onclick = () => { ineq.addLine("solid", "larger") };
+                solidBtn.onclick = () => { ineq.addLine("solid") };
                 node.appendChild(solidBtn)
 
                 var dashedBtn = document.createElement("button");
-                dashedBtn.innerText = "┄ ↑";
+                dashedBtn.innerText = "Dashed line";
                 dashedBtn.type = "button";
                 dashedBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-                dashedBtn.onclick = () => { ineq.addLine("dashed", "larger") };
-                node.appendChild(dashedBtn)
-
-                var solidBtn = document.createElement("button");
-                solidBtn.innerText = "─ ↓";
-                solidBtn.type = "button";
-                solidBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-                solidBtn.onclick = () => { ineq.addLine("solid", "smaller") };
-                node.appendChild(solidBtn)
-
-                var dashedBtn = document.createElement("button");
-                dashedBtn.innerText = "┄ ↓";
-                dashedBtn.type = "button";
-                dashedBtn.classList = "btn btn-outline-secondary w-100 w-sm-auto mb-8pt mb-sm-0 mr-sm-16pt";
-                dashedBtn.onclick = () => { ineq.addLine("dashed", "smaller") };
+                dashedBtn.onclick = () => { ineq.addLine("dashed") };
                 node.appendChild(dashedBtn)
             }
 
@@ -122,6 +109,7 @@ const createCummulativeFrequencyDiagram = (() => {
             })
 
             c.elt.style["margin-top"] = "10px";
+            p.cursor(p.HAND);
         }
 
         p.draw = () => {
@@ -153,9 +141,11 @@ class Inequalities {
         interactive,
         input_lines
     }, p, update) {
+        // load in data
         this.p = p;
         this.update = update;
 
+        // create canvas
         this.canv = new Coordinate_Canvas(canvasData, p, () => {});
 
         this.hoverPoint = null;
@@ -168,26 +158,38 @@ class Inequalities {
         this.add = false;
         this.line_type;
         this.line_direction;
+
+        // init output
+        this.update(this.out());
     }
 
     draw() {
         var p = this.p;
+        // draw canvas
         this.canv.draw();
+        // shaded areas colors
         var col = ["#00ACED", "#F26363", "#69B516", "#FF8F41"];
 
+        // reset hover point
         this.hoverPoint = null;
 
         var mo = { x: p.mouseX, y: p.mouseY }
         var s = this.canv.snap(p.mouseX, p.mouseY)
         var mouse = this.canv.getInvPos(s.x, s.y);
+        // check for point dragging
         if (this.dragPoint != null) {
             if (this.interactive) {
+                // dragging one of the points on a line
                 if (this.dragPoint == 1) {
                     this.dragLine.x1 = mouse.x;
                     this.dragLine.y1 = mouse.y;
-                } else {
+                } else if (this.dragPoint == 2) {
                     this.dragLine.x2 = mouse.x;
                     this.dragLine.y2 = mouse.y;
+                } else {
+                    /*
+                    this.dragLine.c_x = mouse.x;
+                    this.dragLine.c_y = mouse.y;*/
                 }
                 this.update(this.out());
             }
@@ -196,6 +198,7 @@ class Inequalities {
         p.stroke(labelTextColor);
         p.strokeWeight(2);
         var lin = this.lines;
+        /*
         if (this.v1) {
             lin = this.lines.concat([{
                 x1: this.v1.x,
@@ -205,13 +208,17 @@ class Inequalities {
                 type: this.line_type,
                 direction: this.line_direction
             }])
-        }
+        }*/
 
+        // loop through all the lines
         for (var l of lin) {
             p.fill(col[lin.indexOf(l) % col.length] + "40");
+            // preparee pointpositions
             var p1 = this.canv.getPos(l.x1, l.y1);
             var p2 = this.canv.getPos(l.x2, l.y2);
+            var p3 = this.canv.getPos(l.c_x, l.c_y);
 
+            // calculate the function from points
             var dy = p1.y - p2.y;
             var dx = p1.x - p2.x;
             var m = dy / dx;
@@ -219,11 +226,14 @@ class Inequalities {
                 return (m * x + p1.y - p1.x * m);
             }
 
+            //Draw points if interactive
             if (this.interactive) {
+                // pooint 1
                 p.push();
                 p.strokeWeight(10);
                 p.stroke(201, 45, 24)
                 if (p.dist(p1.x, p1.y, mo.x, mo.y) < 10 && this.hoverPoint == null && this.interactive) {
+                    // check for hover
                     this.hoverLine = l;
                     this.hoverPoint = 1;
                     p.strokeWeight(15);
@@ -231,64 +241,152 @@ class Inequalities {
                 p.point(p1.x, p1.y);
                 p.pop();
 
+                // point 2
                 p.push();
                 p.strokeWeight(10);
                 p.stroke(201, 45, 24)
                 if (p.dist(p2.x, p2.y, mo.x, mo.y) < 10 && this.hoverPoint == null && this.interactive) {
+                    // check for hover
                     this.hoverLine = l;
                     this.hoverPoint = 2;
                     p.strokeWeight(15);
                 }
                 p.point(p2.x, p2.y);
                 p.pop();
+
+                // Button
+                p.push();
+                p.strokeWeight(5);
+                p.stroke(col[lin.indexOf(l) % col.length])
+                if (p.dist((p2.x + p1.x) / 2, (p2.y + p1.y) / 2, mo.x, mo.y) < 20 && this.hoverPoint == null && this.interactive) {
+                    // check for hover
+                    this.hoverLine = l;
+                    this.hoverPoint = -1;
+                    p.strokeWeight(10);
+                }
+                if (dx == 0) {
+                    p.translate((p2.x + p1.x) / 2, (p2.y + p1.y) / 2);
+                    p.rotate(Math.abs(Math.atan(m)) * ((l.direction == "larger" || l.direction == "bigger") ? -1 : 1))
+                } else {
+                    p.translate((p2.x + p1.x) / 2, (p2.y + p1.y) / 2);
+                    p.rotate(Math.atan(m) + ((l.direction == "larger" || l.direction == "bigger") ? Math.PI : 0))
+                }
+                p.line(0, -20, 0, 20);
+                p.line(0, 20, -10, 10);
+                p.line(0, 20, 10, 10);
+                p.pop();
+
+                /*
+                // control point
+                p.push();
+                p.strokeWeight(10);
+                p.stroke(201, 45, 24)
+                if (p.dist(p3.x, p3.y, mo.x, mo.y) < 10 && this.hoverPoint == null && this.interactive) {
+                    // check for hover
+                    this.hoverLine = l;
+                    this.hoverPoint = 3;
+                    p.strokeWeight(15);
+                }
+                p.point(p3.x, p3.y);
+                p.pop();*/
             }
 
+            //Check the direction of the line depending on the control point
+            /*
+            function direction(x1, y1, x2, y2, x3, y3) {
+                if (x1 - x2 == 0) {
+                    // LINE IS VERTICAL
+                    if (x3 < x1) {
+                        return "smaller"
+                    } else {
+                        return "larger"
+                    }
+                }
+
+                //calculate function from points
+                var m = (y2 - y1) / (x2 - x1)
+                var b = m * -x1 + y1
+
+                var f = (x) => {
+                    return m * x + b
+                }
+
+                if (y3 > f(x3)) {
+                    //it's bigger
+                    return "larger"
+                } else if (y3 < f(x3)) {
+                    //it's smaller
+                    return "smaller"
+                } else {
+                    //it's on the line
+                    return "smaller"
+                }
+            }*/
+
+            // set the direction
+            //l.direction = direction(l.x1, l.y1, l.x2, l.y2, l.c_x, l.c_y);
+
             if (l.type == "dashed") {
+                // draw a dashed line
                 const ctx = p.drawingContext;
                 p.strokeWeight(3)
+                    // set dashing
                 ctx.setLineDash([20, 20]);
 
                 if (dx == 0) {
+                    // vertical
                     p.line(p1.x, 0, p1.x, p.height);
                 } else {
+                    //normal
                     p.line(0, f(0), p.width, f(p.width))
                 }
 
+                // stop dashing
                 ctx.setLineDash([10, 0]);
             } else {
                 if (dx == 0) {
+                    // vertical
                     p.line(p1.x, 0, p1.x, p.height);
                 } else {
+                    // normal
                     p.line(0, f(0), p.width, f(p.width))
                 }
             }
 
             p.push();
             p.noStroke();
+            // draw the shading
             if (l.direction != undefined) {
                 p.beginShape();
                 if (dx == 0) {
-                    if (l.direction == "larger") {
+                    // vertical
+                    if (l.direction == "larger" || l.direction == "bigger") {
+                        //larger
                         p.vertex(p1.x, 0)
                         p.vertex(p1.x, p.height)
                     } else {
+                        //smaller
                         p.vertex(p1.x, 0)
                         p.vertex(p1.x, p.height)
                     }
                 } else {
+                    // normal
                     p.vertex(0, f(0))
                     p.vertex(p.width, f(p.width))
                 }
 
 
-                if (l.direction == "larger") {
+                // finish drawing
+                if (l.direction == "larger" || l.direction == "bigger") {
+                    // for larger
                     p.vertex(p.width, p.height);
                     p.vertex(p.width, 0);
                     p.vertex(0, 0);
                     p.vertex(0, p.height);
-                    if (dx == 0) p.vertex(0, 0);
+                    if (dx == 0) p.vertex(0, 0); // extra vertex for vertical
                 } else {
-                    if (dx == 0) p.vertex(p.width, p.height);
+                    // for smaller
+                    if (dx == 0) p.vertex(p.width, p.height); // extra vertex for vertical
                     p.vertex(p.width, 0);
                     p.vertex(p.width, p.height);
                     p.vertex(0, p.height);
@@ -304,317 +402,92 @@ class Inequalities {
         var s = this.canv.snap(this.p.mouseX, this.p.mouseY)
         var m = this.canv.getInvPos(s.x, s.y);
 
-        if (this.add) {
-            if (!this.v1) {
-                this.v1 = {
-                    x: m.x,
-                    y: m.y
+        if (this.hoverLine) {
+            if (this.hoverPoint == -1) {
+                if (this.hoverLine.direction == "larger" || this.hoverLine.direction == "bigger") {
+                    this.hoverLine.direction = "smaller";
+                } else {
+                    this.hoverLine.direction = "larger"
                 }
-            } else {
-                this.lines.push({
-                    x1: this.v1.x,
-                    y1: this.v1.y,
-                    x2: m.x,
-                    y2: m.y,
-                    type: this.line_type,
-                    direction: this.line_direction
-                })
-
-                this.add = false;
-                this.v1 = undefined;
-                this.update(this.out());
             }
+        }
+
+        if (this.add) {
+            /*
+                        if (!this.v1) {
+                            this.v1 = {
+                                x: m.x,
+                                y: m.y
+                            }
+                        } else {
+                            this.lines.push({
+                                x1: this.v1.x,
+                                y1: this.v1.y,
+                                x2: m.x,
+                                y2: m.y,
+                                type: this.line_type,
+                                direction: this.line_direction
+                            })
+
+                            this.add = false;
+                            this.v1 = undefined;
+                            this.update(this.out());
+                        }*/
         } else {
+            // set dragged point
             this.dragLine = this.hoverLine;
             this.dragPoint = this.hoverPoint;
         }
     }
 
     release() {
+        // reset dragged point
         this.dragPoint = null;
     }
 
     out() {
-        return [JSON.stringify(this.lines)];
+        //export
+        return [JSON.stringify(this.lines.map(x => {
+
+            var dy = x.y1 - x.y2;
+            var dx = x.x1 - x.x2;
+            if (dx == 0) {
+                return {
+                    equation: `y${(x.direction == "larger" || x.direction == "bigger")?"\\gt":"\\lt"}${x.x1}`,
+                    type: x.type
+                };
+            } else {
+                var m = this.p.round(dy / dx, 6);
+                var b = this.p.round(x.y1 - x.x1 * m, 6);
+
+                return {
+                    equation: `y${(x.direction == "larger" || x.direction == "bigger")?"\\gt":"\\lt"}${m}x+${b}`.replaceAll("--", "+").replaceAll("+-", "-"),
+                    type: x.type
+                };
+            }
+        }))];
     }
 
-    addLine(lineType, direction) {
-        this.add = true;
-        this.line_type = lineType;
-        this.line_direction = direction;
+    addLine(lineType) {
+        // add a randomised ine
+        this.lines.push({
+            x1: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+            y1: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end)),
+            x2: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+            y2: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end)),
+            c_x: this.p.random(Math.ceil(this.canv.x_axis.start), Math.floor(this.canv.x_axis.end)),
+            c_y: this.p.random(Math.ceil(this.canv.y_axis.start), Math.floor(this.canv.y_axis.end)),
+            type: lineType,
+            direction: this.p.random("larger", "smaller")
+        })
+        this.update(this.out());
     }
 
     clear() {
+        // reset lines
         this.lines = []
+        this.update(this.out());
     }
-
-    resize() {}
-}
-
-class Coordinate_Canvas {
-    constructor({
-        quadrants,
-        x_axis = {
-            start,
-            end,
-            increment,
-            show,
-            label
-        },
-        y_axis = {
-            start,
-            end,
-            increment,
-            show,
-            label
-        },
-        showGrid,
-        snapToGrid,
-        axisNumbering
-    }, p, update) {
-        this.p = p;
-        this.update = update;
-
-        this.x_axis = x_axis;
-        this.x_axis.start -= this.x_axis.increment / 2;
-        this.x_axis.end += this.x_axis.increment / 2;
-
-        this.y_axis = y_axis;
-        this.y_axis.start -= this.y_axis.increment / 2;
-        this.y_axis.end += this.y_axis.increment / 2;
-
-        this.quadrants = quadrants;
-        this.showGrid = showGrid;
-        this.snapToGrid = snapToGrid;
-        this.axisNumbering = axisNumbering;
-
-        /*
-        for (var val = 0; val < this.values.length; val++) {
-            const regex = /\\frac\{(.*)\}\{(.*)\}/;
-            var mach = values[val].match(regex);
-            if (mach != null) {
-                this.values[val] = {
-                    type: "fraction",
-                    numerator: mach[1],
-                    denominator: mach[2]
-                }
-            }
-        }*/
-    }
-
-    draw() {
-        var p = this.p;
-
-        p.background(backgroundColor)
-        p.stroke(labelTextColor);
-        p.strokeWeight(2);
-
-        var x_axis_pos;
-        var y_axis_pos;
-        if (this.quadrants == "full") {
-            x_axis_pos = 0;
-            y_axis_pos = 0;
-        }
-        /*else if (this.quadrants == 1) {
-                   x_axis_pos = this.x_axis.start;
-                   y_axis_pos = this.y_axis.start;
-               } else if (this.quadrants == 2) {
-                   x_axis_pos = this.x_axis.end;
-                   y_axis_pos = this.y_axis.start;
-               } else if (this.quadrants == 3) {
-                   x_axis_pos = this.x_axis.end;
-                   y_axis_pos = this.y_axis.end;
-               } else if (this.quadrants == 4) {
-                   x_axis_pos = this.x_axis.start;
-                   y_axis_pos = this.y_axis.end;
-               } */
-        else if (this.quadrants == "line") {
-            this.x_axis.show = true;
-
-            this.y_axis.show = false;
-            this.showGrid = false;
-
-            x_axis_pos = 0;
-            y_axis_pos = (this.y_axis.start + this.y_axis.end) / 2;
-        } else {
-            x_axis_pos = 0;
-            y_axis_pos = 0;
-        }
-        this.x_axis_pos = x_axis_pos;
-        this.y_axis_pos = y_axis_pos;
-
-        var ya = p.map(y_axis_pos, this.y_axis.start, this.y_axis.end, p.height, 0);
-        var xa = p.map(x_axis_pos, this.x_axis.start, this.x_axis.end, 0, p.width);
-
-        // X axis
-        if (this.x_axis.show) {
-            if (this.quadrants == "line") {
-                p.line(0, p.height / 2, p.width, p.height / 2);
-
-                p.push();
-                p.fill(labelTextColor);
-                p.noStroke();
-                p.textAlign(p.BOTTOM, p.LEFT);
-                p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 5, p.height / 2 - 12)
-                p.pop();
-            } else {
-                p.line(0, ya, p.width, ya);
-
-                p.push();
-                p.fill(labelTextColor);
-                p.noStroke();
-                p.textAlign(p.TOP, p.LEFT);
-                p.text(this.x_axis.label, p.width - p.textWidth(this.x_axis.label) - 3, ya - 12)
-                p.pop();
-            }
-        }
-
-        // Y axis
-        if (this.y_axis.show) {
-            p.line(xa, 0, xa, p.height);
-
-            p.push();
-            p.fill(labelTextColor);
-            p.noStroke();
-            p.textAlign(p.BOTTOM, p.LEFT);
-            p.text(this.y_axis.label, xa + 5, 12)
-            p.pop();
-        }
-
-        p.stroke(labelTextColor + "30");
-        p.strokeWeight(1);
-        //X lines
-        for (var i = this.x_axis.increment * p.floor(this.x_axis.start / this.x_axis.increment); i <= this.x_axis.end; i += this.x_axis.increment) {
-            var x = p.map(i, this.x_axis.start, this.x_axis.end, 0, p.width);
-
-            if (this.showGrid) {
-                p.line(x, 0, x, p.height);
-            }
-
-            if (this.axisNumbering) {
-                if (this.x_axis.show) {
-                    var rounding = this.x_axis.increment.toString().split(".")[1];
-                    if (!rounding) rounding = 0;
-                    else rounding = rounding.length;
-
-                    p.push();
-                    p.noStroke();
-                    var rounded = Math.round(i * 10 ** rounding) / 10 ** rounding
-                    if (rounded != x_axis_pos) {
-                        var b = { x: x - p.textWidth(rounded) / 2, y: ya + 15 - 12, w: p.textWidth(rounded), h: 13 }
-                        p.fill(backgroundColor);
-                        p.rect(b.x, b.y, b.w, b.h);
-
-                        p.fill(labelTextColor);
-                        p.text(rounded, x - p.textWidth(rounded) / 2, ya + 15);
-                    } else {
-                        /*
-                        p.fill(labelTextColor);
-                        p.text(rounded, x + 3, ya + 15);*/
-                    }
-                    p.pop();
-                }
-            }
-
-            if (this.x_axis.show) {
-                p.push();
-                p.stroke(labelTextColor)
-                p.line(x, ya - 2, x, ya + 2);
-                p.pop();
-            }
-        }
-
-        //Y lines
-        for (var i = this.y_axis.increment * p.floor(this.y_axis.start / this.y_axis.increment); i <= this.y_axis.end; i += this.y_axis.increment) {
-            var y = p.map(i, this.y_axis.start, this.y_axis.end, p.height, 0);
-
-            if (this.showGrid) {
-                p.line(0, y, p.width, y);
-            }
-
-            if (this.axisNumbering) {
-                if (this.y_axis.show) {
-                    var rounding = this.y_axis.increment.toString().split(".")[1];
-                    if (!rounding) rounding = 0;
-                    else rounding = rounding.length;
-
-                    p.push();
-                    p.fill(labelTextColor);
-                    p.noStroke();
-                    var rounded = Math.round((i) * 10 ** rounding) / 10 ** rounding
-                    if (rounded != y_axis_pos) {
-                        var b = { x: xa - p.textWidth(rounded) - 6, y: y + 4 - 12, w: p.textWidth(rounded) + 2, h: 13 }
-                        p.fill(backgroundColor);
-                        p.rect(b.x, b.y, b.w, b.h);
-
-                        p.fill(labelTextColor);
-                        p.text(rounded, xa - p.textWidth(rounded) - 5, y + 4);
-                    } else {
-                        /*
-                        p.text(rounded, xa - p.textWidth(rounded) - 5, y - 4);*/
-                    }
-                    p.pop();
-                }
-            }
-
-            if (this.y_axis.show) {
-                p.push();
-                p.stroke(labelTextColor);
-                p.line(xa - 2, y, xa + 2, y);
-                p.pop();
-            }
-        }
-
-        var snap = this.snap(p.mouseX, p.mouseY);
-        p.strokeWeight(5);
-        p.stroke(0)
-        p.point(snap.x, snap.y)
-    }
-
-    snap(x, y) {
-        var p = this.p;
-        if (!this.snapToGrid) {
-            return { x: x, y: y };
-        } else {
-            if (this.quadrants == "line") {
-                var xa = p.map(this.x_axis_pos, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var xInc = p.map(this.x_axis.increment + this.x_axis.start, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var x_s = Math.round((x - xa) / xInc) * xInc + xa;
-
-                var y_axis_pos = (this.y_axis.start + this.y_axis.end) / 2;
-                var y_s = p.map(y_axis_pos, this.y_axis.start, this.y_axis.end, p.height, 0);
-
-                return { x: x_s, y: y_s };
-            } else {
-                var xa = p.map(0, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var ya = p.map(0, this.y_axis.start, this.y_axis.end, p.height, 0);
-
-                var xInc = p.map(this.x_axis.increment + this.x_axis.start, this.x_axis.start, this.x_axis.end, 0, p.width);
-                var yInc = p.map(this.y_axis.increment + this.y_axis.start, this.y_axis.start, this.y_axis.end, 0, p.height);
-
-                var x_s = p.round((x - xa) / xInc) * xInc + xa;
-                var y_s = p.round((y - ya) / yInc) * yInc + ya;
-
-                return { x: x_s, y: y_s };
-            }
-        }
-    }
-
-    getPos(x, y) {
-        var y_m = this.p.map(y, this.y_axis.start, this.y_axis.end, this.p.height, 0);
-        var x_m = this.p.map(x, this.x_axis.start, this.x_axis.end, 0, this.p.width);
-
-        return ({ x: x_m, y: y_m });
-    }
-
-    getInvPos(x, y) {
-        var y_m = this.p.map(y, this.p.height, 0, this.y_axis.start, this.y_axis.end);
-        var x_m = this.p.map(x, 0, this.p.width, this.x_axis.start, this.x_axis.end);
-
-        return ({ x: x_m, y: y_m });
-    }
-
-    click() {}
 
     resize() {}
 }
